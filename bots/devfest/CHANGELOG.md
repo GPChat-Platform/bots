@@ -4,6 +4,14 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.1.0] — 2026-11-19
+
+### Corrigé
+- `/annonce` tient 500+ destinataires : envoi en arrière-plan (Docker) ou en file par lots de 50 (Firebase), confirmation finale à l'organisateur avec le nombre d'envois et d'échecs ; annonce vide refusée.
+
+### Modifié
+- Traitement des conversations en parallèle (SDK 1.1).
+
 ## [1.0.0] — 2026-11-19
 
 ### Ajouté

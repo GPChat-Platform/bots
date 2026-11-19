@@ -13,8 +13,10 @@ function fakeDb() {
   const users = new Map();
   const seen = new Set();
   const writes = [];
+  const broadcasts = [];
   return {
-    users, writes,
+    users, writes, broadcasts,
+    enqueueBroadcast: async (text, fromUserId, lang, ids) => { broadcasts.push({ text, fromUserId, lang, ids: [...ids] }); return 'B1'; },
     getUser: async (id) => (users.has(id) ? JSON.parse(JSON.stringify(users.get(id))) : null),
     setUser: async (id, data) => { writes.push(id); users.set(id, JSON.parse(JSON.stringify(data))); },
     allUserIds: async () => [...users.keys()],
@@ -80,10 +82,35 @@ test('annonce : réservée aux organisateurs, diffusée à tous les utilisateurs
   await s.dm('/start', 'b');
   await s.dm('/annonce Salle Lab ouverte', 'a');
   assert.match(s.sent.at(-1).text, /réservée/);
-  const n = s.sent.length;
   await s.dm('/annonce Salle Lab ouverte', 'admin1');
-  assert.ok(s.sent.length >= n + 3);
-  assert.ok(s.sent.some((m) => m.to === 'a' && /Salle Lab ouverte/.test(m.text)));
+  // Serverless : rien n'est envoyé dans la requête ; l'annonce est mise en file pour TOUS les utilisateurs connus.
+  assert.equal(s.db.broadcasts.length, 1);
+  assert.deepEqual(s.db.broadcasts[0].ids.sort(), ['a', 'b']);
+  assert.equal(s.db.broadcasts[0].text, '📣 Salle Lab ouverte');
+  assert.equal(s.db.broadcasts[0].fromUserId, 'admin1');
+  assert.ok(!s.sent.some((m) => m.to === 'a' && /Salle Lab/.test(m.text)), 'aucun envoi direct dans la requête');
+  assert.match(s.sent.at(-1).text, /en cours d'envoi à 2 personne/);
+});
+
+test('annonce : envoi d\'un lot (parallèle, échecs comptés, jamais d\'exception)', async () => {
+  const { sendBatch } = require('../functions/runtime');
+  const sent = [];
+  const bot = { sendMessage: async (to) => { await new Promise((r) => setTimeout(r, 5)); if (to.startsWith('x')) throw new Error('KO'); sent.push(to); } };
+  const recipients = [...Array.from({ length: 48 }, (_, i) => `u${i}`), 'x1', 'x2'];
+  const t0 = Date.now();
+  const r = await sendBatch({ bot, text: 't', recipients, parallel: 5 });
+  assert.deepEqual(r, { sent: 48, failed: 2 });
+  assert.equal(new Set(sent).size, 48);
+  assert.ok(Date.now() - t0 < 50 * 5, 'envois en parallèle');
+});
+
+test('annonce : 500 destinataires mis en file sans envoi dans la requête', async () => {
+  const s = setup('2026-11-28T10:30:00+01:00', ['admin1']);
+  for (let i = 0; i < 500; i += 1) s.db.users.set(`p${i}`, { lang: 'fr', reminders: [], sent: [] });
+  const t0 = Date.now();
+  await s.dm('/annonce Ouverture des portes', 'admin1');
+  assert.ok(Date.now() - t0 < 500, 'réponse immédiate');
+  assert.equal(s.db.broadcasts[0].ids.length, 500);
 });
 
 test('aucune écriture inutile quand rien ne change', async () => {

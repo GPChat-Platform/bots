@@ -4,6 +4,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.2.0] — 2026-11-19
+
+### Modifié
+- Jusqu'à 16 conversations traitées en parallèle (variable `CONCURRENCY`) : un utilisateur lent ne bloque plus les autres.
+
 ## [1.1.0] — 2026-11-19
 
 ### Modifié

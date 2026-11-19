@@ -6,6 +6,7 @@
  *   db.getUser(id)            → préférences de l'utilisateur ou null
  *   db.setUser(id, data)      → enregistre
  *   db.allUserIds()           → tous les identifiants (annonces)
+ *   db.enqueueBroadcast(text, fromUserId, lang, ids) → met l'annonce en file (lots traités par un déclencheur)
  *   db.usersWithReminders()   → [{ id, data }] des utilisateurs ayant un rappel (déclencheur planifié)
  *   db.markSeen(eventId)      → true la première fois, false si l'événement a déjà été traité (dédoublonnage)
  *
@@ -43,15 +44,19 @@ function createRuntime({ db, bot, program, admins = [], log = { error() {}, warn
     if (eventId && !(await db.markSeen(eventId))) return { duplicate: true };
     const users = {};
     const ids = new Set([d.from].filter(Boolean));
-    const isAnnounce = /^\/(annonce|announce)\b/i.test(String(d.textMsg || ''));
-    if (isAnnounce) for (const id of await db.allUserIds()) ids.add(id);
     for (const id of ids) {
       const u = await db.getUser(id);
       if (u) users[id] = u;
     }
     const store = makeStore(users);
     const before = snapshot(store.data.users);
-    const { handle } = createHandler({ bot, program, store, admins, now, log });
+    // Annonce : la liste des destinataires est lue au moment de l'envoi et mise en file (jamais envoyée dans la requête).
+    const broadcast = async (text, fromUserId, lang) => {
+      const all = await db.allUserIds();
+      await db.enqueueBroadcast(text, fromUserId, lang, all);
+      return all.length;
+    };
+    const { handle } = createHandler({ bot, program, store, admins, now, log, broadcast });
     await handle(update);
     await persistChanged(store, before);
     return { duplicate: false };
@@ -71,4 +76,22 @@ function createRuntime({ db, bot, program, admins = [], log = { error() {}, warn
   return { handleEvent, tick };
 }
 
-module.exports = { createRuntime };
+/**
+ * Envoi d'un lot d'annonce (déclencheur sur chaque document de lot) : quelques envois en parallèle,
+ * résultat renvoyé pour mise à jour des compteurs. Ne lève jamais.
+ */
+async function sendBatch({ bot, text, recipients, parallel = 5 }) {
+  let sent = 0;
+  let failed = 0;
+  const queue = [...recipients];
+  const worker = async () => {
+    while (queue.length) {
+      const id = queue.shift();
+      try { await bot.sendMessage(id, text); sent += 1; } catch { failed += 1; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(parallel, recipients.length) }, worker));
+  return { sent, failed };
+}
+
+module.exports = { createRuntime, sendBatch };

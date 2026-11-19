@@ -4,6 +4,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.1.0] — 2026-11-19
+
+### Modifié
+- Traitement des conversations en parallèle (SDK 1.1).
+
 ## [1.0.0] — 2026-11-19
 
 ### Ajouté

@@ -95,10 +95,61 @@ test('poll : acquitte seulement les événements traités sans erreur', async ()
     return next;
   };
   const errors = [];
-  stop = bot.poll(async (u) => { if (u.id === 'b') throw new Error('boom'); }, { timeout: 20, onError: (e) => errors.push(e.message) });
-  await new Promise((r) => setTimeout(r, 50));
-  assert.deepEqual(sentAcks[1], ['a'], 'seul « a » est acquitté');
+  stop = bot.poll(async (u) => { if (u.id === 'b') throw new Error('boom'); }, { timeout: 20, busyPollMs: 5, onError: (e) => errors.push(e.message) });
+  await new Promise((r) => setTimeout(r, 80));
+  assert.deepEqual(sentAcks.flat(), ['a'], 'seul « a » est acquitté');
   assert.deepEqual(errors, ['boom']);
+});
+
+/** Simule l'API : `pending` = événements non acquittés, redonnés à chaque appel tant qu'ils ne sont pas acquittés. */
+function fakeUpdatesApi(events) {
+  const pending = new Map(events.map((e) => [e.id, e]));
+  const calls = [];
+  return {
+    pending, calls,
+    getUpdates: async ({ ack = [], limit = 50 }) => {
+      calls.push({ ack: [...ack] });
+      ack.forEach((id) => pending.delete(id));
+      return { updates: [...pending.values()].slice(0, limit), hasMore: false };
+    },
+  };
+}
+
+test('poll : conversations traitées en parallèle, ordre conservé dans chaque conversation', async () => {
+  const events = [];
+  for (let u = 0; u < 4; u += 1) for (let n = 0; n < 3; n += 1) events.push({ id: `u${u}-${n}`, type: 'message.received', data: { chatId: `u${u}` } });
+  const api = fakeUpdatesApi(events);
+  const bot = new GPChatBot({ apiKey: 'k' });
+  bot.getUpdates = api.getUpdates;
+  const order = {};
+  let running = 0;
+  let maxRunning = 0;
+  const stop = bot.poll(async (u) => {
+    running += 1; maxRunning = Math.max(maxRunning, running);
+    await new Promise((r) => setTimeout(r, 30));
+    (order[u.data.chatId] ||= []).push(u.id);
+    running -= 1;
+  }, { concurrency: 4, busyPollMs: 5, timeout: 0, idleDelayMs: 5 });
+  const t0 = Date.now();
+  while (api.pending.size && Date.now() - t0 < 3000) await new Promise((r) => setTimeout(r, 10));
+  stop();
+  assert.equal(api.pending.size, 0, 'tout est acquitté');
+  assert.ok(maxRunning >= 3, `parallélisme effectif (max ${maxRunning})`);
+  for (let u = 0; u < 4; u += 1) assert.deepEqual(order[`u${u}`], [`u${u}-0`, `u${u}-1`, `u${u}-2`], 'ordre par conversation');
+  assert.ok(Date.now() - t0 < 600, 'nettement plus rapide que 12 × 30 ms en série');
+});
+
+test('poll : un événement redonné pendant son traitement n\'est pas traité deux fois', async () => {
+  const api = fakeUpdatesApi([{ id: 'x', data: { chatId: 'c' } }]);
+  const bot = new GPChatBot({ apiKey: 'k' });
+  bot.getUpdates = api.getUpdates;
+  let count = 0;
+  const stop = bot.poll(async () => { count += 1; await new Promise((r) => setTimeout(r, 60)); }, { busyPollMs: 5, timeout: 0, idleDelayMs: 5 });
+  const t0 = Date.now();
+  while (api.pending.size && Date.now() - t0 < 2000) await new Promise((r) => setTimeout(r, 10));
+  stop();
+  assert.equal(count, 1);
+  assert.ok(api.calls.length >= 3, 'la boucle a bien interrogé l\'API pendant le traitement');
 });
 
 test('middleware Express : refuse une signature invalide, expose l\'événement sinon', () => {

@@ -1,11 +1,19 @@
 {
   "name": "gpchat-bot-devfest",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Bot Guide DevFest : programme, session en cours, rappels, vote du public, FAQ",
   "license": "MIT",
   "private": true,
   "main": "src/index.js",
-  "engines": { "node": ">=20" },
-  "dependencies": { "@gpchat/bot": "file:../../packages/sdk", "@gpchat/bot-ops": "file:../../packages/ops" },
-  "scripts": { "start": "node src/index.js", "test": "node --test" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@gpchat/bot": "file:../../packages/sdk",
+    "@gpchat/bot-ops": "file:../../packages/ops"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  }
 }

@@ -40,7 +40,7 @@ export class GPChatBot {
   deleteMessage(target: Target, msgId: string): Promise<unknown>;
   sendChatAction(to: string, action?: 'typing' | 'recording', seconds?: number): Promise<unknown>;
   getUpdates(params?: { ack?: string[]; limit?: number; timeout?: number }): Promise<{ updates: Update[]; hasMore: boolean; acknowledged?: number }>;
-  poll(handler: (update: Update) => Promise<void> | void, options?: { timeout?: number; limit?: number; idleDelayMs?: number; onError?: (e: Error) => void }): () => void;
+  poll(handler: (update: Update) => Promise<void> | void, options?: { timeout?: number; limit?: number; concurrency?: number; busyPollMs?: number; retryAfterMs?: number; idleDelayMs?: number; onError?: (e: Error) => void }): () => void;
 }
 
 export function verifyWebhookSignature(

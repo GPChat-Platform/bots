@@ -108,10 +108,33 @@ test('/annonce : réservée aux organisateurs, diffusée à tous', async () => {
   await s.dm('/start', 'b');
   await s.dm('/annonce Salle Lab ouverte', 'a');
   assert.match(s.sent.at(-1).text, /réservée/);
-  const n = s.sent.length;
+  await s.dm('/annonce', 'admin1');
+  assert.match(s.sent.at(-1).text, /vide/);
   await s.dm('/annonce Salle Lab ouverte', 'admin1');
-  assert.ok(s.sent.length >= n + 3);
+  // La réponse immédiate annonce l'envoi en cours ; la diffusion continue en arrière-plan sans bloquer le bot.
+  assert.match(s.sent.find((m) => m.to === 'admin1' && /en cours/.test(m.text)).text, /3 personne/);
+  const t0 = Date.now();
+  while (!s.sent.some((m) => /Annonce envoyée à 3/.test(m.text)) && Date.now() - t0 < 2000) await new Promise((r) => setTimeout(r, 10));
   assert.ok(s.sent.some((m) => m.to === 'a' && /Salle Lab ouverte/.test(m.text)));
+  assert.ok(s.sent.some((m) => m.to === 'b' && /Salle Lab ouverte/.test(m.text)));
+  assert.ok(s.sent.some((m) => m.to === 'admin1' && /✅ Annonce envoyée à 3 personne/.test(m.text)), 'confirmation finale');
+});
+
+test('/annonce : un destinataire en échec n\'arrête pas la diffusion', async () => {
+  const s = setup('10:30', ['admin1']);
+  await s.dm('/start', 'a');
+  await s.dm('/start', 'casse');
+  const real = s.h;
+  void real;
+  const sent = [];
+  const bot = { sendMessage: async (to, text) => { if (to === 'casse') throw new Error('bloqué'); sent.push({ to, text }); }, sendGroupMessage: async () => {} };
+  const { createHandler: ch } = require('../src/handlers');
+  const store = { data: { users: { a: { lang: 'fr', reminders: [], sent: [] }, casse: { lang: 'fr', reminders: [], sent: [] } } }, throttleMs: 0, save() {}, user(id) { return (this.data.users[id] ||= { lang: 'fr', reminders: [], sent: [] }); } };
+  const h = ch({ bot, program, store, admins: ['admin1'] });
+  await h.handle({ type: 'message.received', data: { from: 'admin1', chatId: 'admin1', type: 'text', textMsg: '/annonce Test' } });
+  const t0 = Date.now();
+  while (!sent.some((m) => /✅/.test(m.text)) && Date.now() - t0 < 2000) await new Promise((r) => setTimeout(r, 10));
+  assert.match(sent.find((m) => /✅/.test(m.text)).text, /envoyée à 2 personne\(s\) \(1 échec/);
 });
 
 test('en groupe : commandes publiques seulement, jamais /annonce', async () => {

@@ -135,22 +135,77 @@ class GPChatBot {
   /**
    * Boucle de polling : appelle `handler(update)` pour chaque événement et l'acquitte seulement
    * s'il se termine sans erreur (sinon il vous est renvoyé). Retourne une fonction d'arrêt.
+   *
+   * Traitement EN PARALLÈLE : jusqu'à `concurrency` conversations à la fois, mais toujours dans l'ordre
+   * au sein d'une même conversation (même `chatId` / `groupId`). Un utilisateur lent (appel externe, IA…)
+   * ne bloque donc plus les autres. Pendant qu'il reste des événements en cours, la boucle interroge l'API
+   * en polling court (toutes les `busyPollMs`) pour acquitter vite et ne pas recevoir deux fois les mêmes.
+   * `concurrency: 1` retrouve le comportement séquentiel.
    */
-  poll(handler, { timeout = 20, limit = 50, onError = (e) => console.error('[gpchat] polling :', e.message), idleDelayMs = 1000 } = {}) {
+  poll(handler, {
+    timeout = 20, limit = 50, concurrency = 8, busyPollMs = 1100, idleDelayMs = 1000, retryAfterMs = 30000,
+    onError = (e) => console.error('[gpchat] polling :', e.message),
+  } = {}) {
     let stopped = false;
-    let ack = [];
+    const toAck = [];
+    const inFlight = new Set();
+    const recentlyDone = new Map(); // id -> horodatage : réacquitte un doublon livré avant que l'acquittement n'arrive
+    const failedAt = new Map(); // id -> horodatage : un événement en échec n'est réessayé qu'après `retryAfterMs`
+    const chains = new Map(); // clé de conversation -> fin de la file de cette conversation
+    let active = 0;
+    const waiters = [];
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const acquire = () => (active < concurrency ? (active += 1, Promise.resolve()) : new Promise((r) => waiters.push(r)));
+    const release = () => { const next = waiters.shift(); if (next) next(); else active -= 1; };
+    const keyOf = (u) => {
+      const d = (u && u.data) || {};
+      return d.groupId ? `g:${d.groupId}` : d.chatId ? `c:${d.chatId}` : d.from ? `u:${d.from}` : `e:${u.id}`;
+    };
+
+    const schedule = (update) => {
+      inFlight.add(update.id);
+      const key = keyOf(update);
+      const prev = chains.get(key) || Promise.resolve();
+      const run = prev.then(async () => {
+        await acquire();
+        try {
+          await handler(update);
+          toAck.push(update.id);
+          recentlyDone.set(update.id, Date.now());
+        } catch (err) {
+          failedAt.set(update.id, Date.now());
+          onError(err); // non acquitté : sera relivré (après retryAfterMs)
+        } finally {
+          release();
+          inFlight.delete(update.id);
+        }
+      });
+      chains.set(key, run);
+      run.then(() => { if (chains.get(key) === run) chains.delete(key); });
+    };
+
     const loop = async () => {
       while (!stopped) {
         try {
-          const { updates } = await this.getUpdates({ ack, limit, timeout });
-          ack = [];
+          const busy = inFlight.size > 0;
+          const { updates } = await this.getUpdates({ ack: toAck.splice(0), limit, timeout: busy ? 0 : timeout });
+          let fresh = 0;
           for (const update of updates) {
-            try { await handler(update); ack.push(update.id); } catch (err) { onError(err); }
+            if (inFlight.has(update.id)) continue; // déjà en cours
+            if (recentlyDone.has(update.id)) { toAck.push(update.id); continue; } // acquittement pas encore reçu
+            if (Date.now() - (failedAt.get(update.id) || 0) < retryAfterMs) continue; // échec récent : on patiente
+            schedule(update);
+            fresh += 1;
           }
-          if (updates.length === 0 && timeout === 0) await new Promise((r) => setTimeout(r, idleDelayMs));
+          const cutoff = Date.now() - 5 * 60 * 1000;
+          for (const [id, t] of recentlyDone) if (t < cutoff) recentlyDone.delete(id);
+          for (const [id, t] of failedAt) if (t < cutoff) failedAt.delete(id);
+          if (inFlight.size > 0 && fresh === 0) await sleep(busyPollMs); // rien de neuf : laisser avancer le traitement
+          else if (fresh === 0 && updates.length > 0) await sleep(busyPollMs); // seulement des échecs récents en attente
+          else if (updates.length === 0 && timeout === 0) await sleep(idleDelayMs);
         } catch (err) {
           onError(err);
-          await new Promise((r) => setTimeout(r, Math.max(idleDelayMs, 3000)));
+          await sleep(Math.max(idleDelayMs, 3000));
         }
       }
     };

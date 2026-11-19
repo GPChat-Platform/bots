@@ -38,7 +38,7 @@ ops.addReadinessCheck('tmdb', async () => {
   }
 });
 
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 ops.listen().catch((e) => log.error("serveur d'exploitation indisponible", { error: e.message }));
 log.info('Ciné Club démarré', { version, mode: 'polling', omdb: Boolean(omdb) });
 

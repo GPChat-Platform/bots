@@ -39,7 +39,9 @@ const S = {
     langOk: 'Langue : français.',
     langBad: 'Langues : `fr`, `en`.',
     unknown: 'Commande inconnue. Tapez /aide.',
-    announceOk: (n) => `📣 Annonce envoyée à ${n} personne(s).`,
+    announceOk: (n) => `📣 Annonce en cours d'envoi à ${n} personne(s). Je vous confirme quand c'est terminé.`,
+    announceDone: (sent, failed) => `✅ Annonce envoyée à ${sent} personne(s)${failed ? ` (${failed} échec(s))` : ''}.`,
+    announceEmpty: 'Votre annonce est vide : `/annonce votre message`.',
     announceDenied: 'Commande réservée aux organisateurs.',
   },
   en: {
@@ -78,7 +80,9 @@ const S = {
     langOk: 'Language: English.',
     langBad: 'Languages: `fr`, `en`.',
     unknown: 'Unknown command. Type /help.',
-    announceOk: (n) => `📣 Announcement sent to ${n} people.`,
+    announceOk: (n) => `📣 Sending the announcement to ${n} people. I'll confirm when it's done.`,
+    announceDone: (sent, failed) => `✅ Announcement sent to ${sent} people${failed ? ` (${failed} failed)` : ''}.`,
+    announceEmpty: 'Your announcement is empty: `/announce your message`.',
     announceDenied: 'Organizers only.',
   },
 };
@@ -90,7 +94,29 @@ const ALIAS = {
   vote: 'vote', faq: 'faq', langue: 'lang', lang: 'lang', annonce: 'announce', announce: 'announce',
 };
 
-function createHandler({ bot, program, store, admins = [], now = Date.now, log: logger = { error() {}, warn() {} } }) {
+/**
+ * Diffusion par défaut (process qui tourne en continu, ex. Docker) : envoi en arrière-plan, espacé, sans bloquer
+ * le traitement des autres messages ; confirmation à l'organisateur à la fin. En serverless, passez votre propre
+ * `broadcast` (file d'envoi par lots — voir firebase/functions).
+ */
+function backgroundBroadcast({ bot, store, logger }) {
+  return async (text, fromUserId, lang) => {
+    const ids = Object.keys(store.data.users);
+    (async () => {
+      let sent = 0;
+      let failed = 0;
+      for (const id of ids) {
+        try { await bot.sendMessage(id, text); sent += 1; } catch (e) { failed += 1; logger.warn('annonce : envoi en échec', { error: e.message }); }
+        await new Promise((r) => setTimeout(r, store.throttleMs ?? 120)); // ~500/min, sous le quota du bot
+      }
+      await bot.sendMessage(fromUserId, S[lang].announceDone(sent, failed), { markdown: true }).catch(() => {});
+    })().catch((e) => logger.error('annonce : échec', { error: e.message }));
+    return ids.length;
+  };
+}
+
+function createHandler({ bot, program, store, admins = [], now = Date.now, log: logger = { error() {}, warn() {} }, broadcast }) {
+  const sendAll = broadcast || backgroundBroadcast({ bot, store, logger });
   const ev = program.event;
   const tz = ev.timezone || 'Africa/Douala';
   const user = (id) => store.user(id);
@@ -160,12 +186,9 @@ function createHandler({ bot, program, store, admins = [], now = Date.now, log: 
       }
       case 'announce': {
         if (!admins.includes(userId)) return say(s.announceDenied);
-        const ids = Object.keys(store.data.users);
-        for (const id of ids) {
-          await bot.sendMessage(id, `📣 ${arg}`).catch(() => {});
-          await new Promise((r) => setTimeout(r, store.throttleMs ?? 1100)); // limite API : ~60 requêtes/min par clé
-        }
-        return say(s.announceOk(ids.length));
+        if (!arg.trim()) return say(s.announceEmpty);
+        const n = await sendAll(`📣 ${arg.trim()}`, userId, lang);
+        return say(s.announceOk(n));
       }
       default: return say(s.unknown);
     }
