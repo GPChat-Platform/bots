@@ -3,17 +3,59 @@
   "username": "devfest_guide_bot",
   "category": "utilities",
   "deliveryMode": "polling",
-  "description": "Le guide du DevFest Douala 2026 : programme complet, session en cours et prochaine, rappels 10 minutes avant, vote du public et questions fréquentes. En français et en anglais.",
+  "description": "Le guide du DevFest Douala 2026 (28 novembre, JFN Hightech University Institute) : programme officiel, session en cours et prochaine, lieu et accès, conférenciers, rappels 10 minutes avant et vote du Challenge. Français et anglais.",
   "commands": [
-    { "command": "programme", "description": "Le programme complet" },
-    { "command": "maintenant", "description": "Ce qui se passe en ce moment" },
-    { "command": "prochain", "description": "La prochaine session" },
-    { "command": "rappel", "description": "Être prévenu 10 minutes avant : /rappel id" },
-    { "command": "rappels", "description": "Vos rappels" },
-    { "command": "annuler", "description": "Annuler un rappel : /annuler id" },
-    { "command": "vote", "description": "Comment voter pour votre équipe préférée" },
-    { "command": "faq", "description": "Questions fréquentes" },
-    { "command": "langue", "description": "Langue : /langue fr ou en" },
-    { "command": "aide", "description": "Liste des commandes" }
+    {
+      "command": "programme",
+      "description": "Le programme complet"
+    },
+    {
+      "command": "maintenant",
+      "description": "Ce qui se passe en ce moment"
+    },
+    {
+      "command": "prochain",
+      "description": "La prochaine session"
+    },
+    {
+      "command": "lieu",
+      "description": "Adresse et accès au lieu"
+    },
+    {
+      "command": "conferenciers",
+      "description": "Les conférenciers annoncés"
+    },
+    {
+      "command": "tracks",
+      "description": "Les thématiques du DevFest"
+    },
+    {
+      "command": "rappel",
+      "description": "Être prévenu 10 minutes avant : /rappel id"
+    },
+    {
+      "command": "rappels",
+      "description": "Vos rappels"
+    },
+    {
+      "command": "annuler",
+      "description": "Annuler un rappel : /annuler id"
+    },
+    {
+      "command": "vote",
+      "description": "Comment voter pour votre équipe préférée"
+    },
+    {
+      "command": "faq",
+      "description": "Questions fréquentes"
+    },
+    {
+      "command": "langue",
+      "description": "Langue : /langue fr ou en"
+    },
+    {
+      "command": "aide",
+      "description": "Liste des commandes"
+    }
   ]
 }

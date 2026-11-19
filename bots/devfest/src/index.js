@@ -1,6 +1,6 @@
 'use strict';
 // Guide DevFest — bot en mode polling. Variables : GPCHAT_API_KEY ; ADMIN_IDS (liste d'userId séparés par des virgules) ;
-// DATA_DIR (./data) ; PROGRAM_FILE (data/program.json, sinon data/program.example.json).
+// DATA_DIR (./data) ; PROGRAM_FILE (sinon le programme du dépôt data/program.json).
 const fs = require('node:fs');
 const path = require('node:path');
 const { GPChatBot } = require('@gpchat/bot');
@@ -12,7 +12,7 @@ if (!process.env.GPCHAT_API_KEY) {
   process.exit(1);
 }
 const dataDir = process.env.DATA_DIR || './data';
-const program = P.load(process.env.PROGRAM_FILE || path.join(dataDir, 'program.json'), path.join(__dirname, '..', 'data', 'program.example.json'));
+const program = P.load(process.env.PROGRAM_FILE || path.join(dataDir, 'program.json'), path.join(__dirname, '..', 'data', 'program.json'));
 
 const file = path.join(dataDir, 'devfest.json');
 const store = { data: { users: {} }, timer: null };

@@ -1,0 +1,59 @@
+{
+  "_source": "Informations du site officiel https://devfest.gdgdouala.org (consulté le 2026-11-19, « programme publié sous réserve de modifications d'horaires »). À mettre à jour si les organisateurs publient des changements.",
+  "event": {
+    "name": "DevFest Douala 2026",
+    "tagline": { "fr": "Créer, sécuriser, faire évoluer : les développeurs et les créateurs à l'ère agentique", "en": "Build, secure, scale: developers and creators in the agentic era" },
+    "date": "2026-11-28",
+    "timezone": "Africa/Douala",
+    "organizer": "GDG Douala",
+    "venue": {
+      "name": "JFN Hightech University Institute",
+      "address": { "fr": "Bonamoussadi – Santa Barbara, Douala 5e (Campus universitaire Santa Barbara)", "en": "Bonamoussadi – Santa Barbara, Douala 5th district (Santa Barbara university campus)" },
+      "landmark": { "fr": "Repère : Carrefour Santa Barbara", "en": "Landmark: Santa Barbara crossroads" },
+      "access": {
+        "fr": "Taxi : demandez « JFN University Institute » ou « carrefour Santa Barbara, Bonamoussadi ». Moto-taxi possible. Parking à proximité. Hôtels dans le centre-ville de Douala.",
+        "en": "Taxi: ask for “JFN University Institute” or “Santa Barbara crossroads, Bonamoussadi”. Motorbike taxis available. Parking nearby. Hotels in downtown Douala."
+      }
+    },
+    "stats": { "fr": "+500 participants · 30 sessions annoncées · 35 mentors et partenaires · 50 bénévoles", "en": "500+ attendees · 30 sessions announced · 35 mentors and partners · 50 volunteers" },
+    "voteUrl": "https://gpchat.app/devfest",
+    "website": "https://devfest.gdgdouala.org",
+    "contact": "contact@gdgdouala.org",
+    "challengeUrl": "https://devfest.gdgdouala.org"
+  },
+  "tracks": [
+    { "id": "platform", "name": "Platform", "summary": { "fr": "Architecture, automatisation et fiabilité pour tenir l'échelle.", "en": "Architecture, automation and reliability at scale." } },
+    { "id": "web", "name": "Web", "summary": { "fr": "Performance, accessibilité et qualité d'expérience du premier rendu au dernier clic.", "en": "Performance, accessibility and experience quality." } },
+    { "id": "ai", "name": "AI", "summary": { "fr": "Retours d'expérience concrets sur l'usage utile de l'IA et ses limites.", "en": "Real-world feedback on useful AI and its limits." } },
+    { "id": "mobile", "name": "Mobile", "summary": { "fr": "Android, Flutter et patterns pour réseaux lents et appareils contraints.", "en": "Android, Flutter and patterns for slow networks and constrained devices." } },
+    { "id": "security", "name": "Security", "summary": { "fr": "Pratiques défensives, gestion des identités, sécurité dans le cycle de livraison.", "en": "Defensive practices, identity management, security in the delivery cycle." } }
+  ],
+  "sessions": [
+    { "id": "archi", "track": "platform", "start": "2026-11-28T09:00:00+01:00", "end": "2026-11-28T09:40:00+01:00", "room": "Salle principale", "level": { "fr": "Intermédiaire", "en": "Intermediate" }, "lang": "FR",
+      "title": "Architecture résiliente et observabilité sous contraintes", "speaker": "Amine Kouassi", "speakerRole": "Architecte produit · Kouassi Systems & Cloud",
+      "summary": { "fr": "Retour d'expérience sur la construction de services cloud hautement disponibles avec des ressources réseau limitées.", "en": "Lessons from building highly available cloud services with limited network resources." } },
+    { "id": "design-system", "track": "web", "start": "2026-11-28T10:15:00+01:00", "end": "2026-11-28T10:55:00+01:00", "room": "Studio", "level": { "fr": "Avancé", "en": "Advanced" }, "lang": "FR",
+      "title": "Design System Section 9 : performance et accessibilité native", "speaker": "Mireille Douala", "speakerRole": "Lead frontend · Douala Tech Lab",
+      "summary": { "fr": "Créer un système de design sans dépendance, conforme WCAG 2.1 AA et optimisé pour le rendu serveur Angular.", "en": "Building a zero-dependency, WCAG 2.1 AA design system optimized for Angular server rendering." } },
+    { "id": "agentic-ai", "track": "ai", "start": "2026-11-28T11:30:00+01:00", "end": "2026-11-28T12:10:00+01:00", "room": "Lab", "level": { "fr": "Débutant", "en": "Beginner" }, "lang": "EN",
+      "title": "Agentic AI : autonomie, supervision et réalités du terrain", "speaker": "Mina Efoa", "speakerRole": "Chercheuse en IA · AfriAI Research",
+      "summary": { "fr": "Intégrer des agents LLM autonomes dans de vrais workflows de développement, au-delà des effets de mode.", "en": "Integrating autonomous LLM agents into real development workflows, beyond the hype." } },
+    { "id": "android-3g", "track": "mobile", "start": "2026-11-28T14:00:00+01:00", "end": "2026-11-28T14:40:00+01:00", "room": "Salle principale", "level": { "fr": "Intermédiaire", "en": "Intermediate" }, "lang": "FR",
+      "title": "Applications Android d'entrée de gamme en 3G : sobriété data", "speaker": "Samuel Nkodo", "speakerRole": "Ingénieur Mobile Android · Cameroon Mobile Labs",
+      "summary": { "fr": "Optimisation réseau, cache agressif et synchronisation d'arrière-plan pour appareils Android d'entrée de gamme.", "en": "Network optimization, aggressive caching and background sync for entry-level Android devices." } },
+    { "id": "api-security", "track": "security", "start": "2026-11-28T15:15:00+01:00", "end": "2026-11-28T15:55:00+01:00", "room": "Studio", "level": { "fr": "Avancé", "en": "Advanced" }, "lang": "FR",
+      "title": "Sécurité des API et souveraineté des données locales", "speaker": "Amine Kouassi", "speakerRole": "Architecte produit · Kouassi Systems & Cloud",
+      "summary": { "fr": "Protéger les données des utilisateurs et renforcer la posture de sécurité face aux cybermenaces émergentes.", "en": "Protecting user data and strengthening security posture against emerging threats." } },
+    { "id": "wasm", "track": "web", "start": "2026-11-28T16:30:00+01:00", "end": "2026-11-28T17:10:00+01:00", "room": "Lab", "level": { "fr": "Intermédiaire", "en": "Intermediate" }, "lang": "EN",
+      "title": "WebAssembly : exécuter du code natif dans le navigateur Web", "speaker": "Mireille Douala", "speakerRole": "Lead frontend · Douala Tech Lab",
+      "summary": { "fr": "Déporter la puissance de calcul C++/Rust côté client sans sacrifier la réactivité.", "en": "Bringing C++/Rust compute to the client without sacrificing responsiveness." } }
+  ],
+  "faq": [
+    { "q": { "fr": "Où se passe le DevFest ?", "en": "Where is DevFest?" }, "a": { "fr": "JFN Hightech University Institute, Bonamoussadi – Santa Barbara, Douala 5e. Repère : carrefour Santa Barbara. Tapez /lieu pour les accès.", "en": "JFN Hightech University Institute, Bonamoussadi – Santa Barbara, Douala 5th district. Landmark: Santa Barbara crossroads. Type /venue for directions." } },
+    { "q": { "fr": "Comment voter pour le Challenge DevFest ?", "en": "How do I vote for the DevFest Challenge?" }, "a": { "fr": "Installez GPChat, créez votre compte, scannez le QR code du DevFest puis touchez « Rejoindre le groupe ». Le bandeau « Votez » apparaît en haut de vos discussions à l'ouverture du vote. Un seul vote par compte.", "en": "Install GPChat, create your account, scan the DevFest QR code then tap “Join the group”. The “Vote” banner appears at the top of your chats when voting opens. One vote per account." } },
+    { "q": { "fr": "Je ne reçois pas le SMS de connexion", "en": "I don't get the sign-in SMS" }, "a": { "fr": "Connectez-vous avec Google, Apple ou une adresse e-mail à la place.", "en": "Sign in with Google, Apple or an e-mail address instead." } },
+    { "q": { "fr": "Dans quelles langues sont les sessions ?", "en": "What languages are the sessions in?" }, "a": { "fr": "Français ou anglais selon la session (indiqué dans /programme : FR ou EN). Le site du DevFest existe en français, anglais et japonais.", "en": "French or English depending on the session (FR or EN in /schedule). The DevFest website is available in French, English and Japanese." } },
+    { "q": { "fr": "Peut-on créer un bot GPChat pendant l'événement ?", "en": "Can we build a GPChat bot during the event?" }, "a": { "fr": "Oui : écrivez à @gpchat_forge et tapez /newbot, ou ouvrez la console développeur sur gpchat.app/developers/console. Un modèle prêt à l'emploi : github.com/GPChat-Platform/bot-template.", "en": "Yes: message @gpchat_forge and type /newbot, or open the developer console at gpchat.app/en/developers/console. A ready-made starter: github.com/GPChat-Platform/bot-template." } },
+    { "q": { "fr": "Inscription, restauration, accessibilité ?", "en": "Registration, catering, accessibility?" }, "a": { "fr": "Les organisateurs (GDG Douala) publieront ces informations sur devfest.gdgdouala.org. Contact : contact@gdgdouala.org.", "en": "The organizers (GDG Douala) will publish these on devfest.gdgdouala.org. Contact: contact@gdgdouala.org." } }
+  ]
+}

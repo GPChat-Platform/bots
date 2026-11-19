@@ -1,7 +1,5 @@
 node_modules/
 data/*
-!bots/devfest/data/
-bots/devfest/data/program.json
 .env
 *.log
 .DS_Store

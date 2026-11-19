@@ -38,7 +38,7 @@ Dans un groupe GPChat, ajoutez le bot puis envoyez `/connecter` : il répond ave
 
 ## 4. DevFest Guide : le programme
 
-Le bot démarre avec `bots/devfest/data/program.example.json`. Copiez-le dans le volume `devfest-data` sous le nom `program.json`, remplissez les vraies sessions (heures avec fuseau, ex. `2026-11-28T09:00:00+01:00`) puis redémarrez le conteneur.
+Le bot démarre avec `bots/devfest/data/program.template.json`. Copiez-le dans le volume `devfest-data` sous le nom `program.json`, remplissez les vraies sessions (heures avec fuseau, ex. `2026-11-28T09:00:00+01:00`) puis redémarrez le conteneur.
 
 ## 5. Mise à jour et sauvegarde
 

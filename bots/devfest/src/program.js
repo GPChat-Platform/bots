@@ -28,7 +28,19 @@ function hhmm(iso, tz = 'Africa/Douala') {
 
 function line(s, lang, tz) {
   const where = tr(s.room, lang);
-  return `**${hhmm(s.start, tz)}** — ${tr(s.title, lang)}${s.speaker ? ` · ${s.speaker}` : ''}${where ? ` · ${where}` : ''}  \`#${s.id}\``;
+  const tags = [s.track && s.track.toUpperCase(), s.lang].filter(Boolean).join(' · ');
+  return `**${hhmm(s.start, tz)}** — ${tr(s.title, lang)}${s.speaker ? ` · ${s.speaker}` : ''}${where ? ` · ${where}` : ''}${tags ? ` · _${tags}_` : ''}  \`#${s.id}\``;
 }
 
-module.exports = { load, tr, current, upcoming, sorted, hhmm, line, start, end };
+/** Conférenciers uniques avec leurs sessions. */
+function speakers(program) {
+  const map = new Map();
+  for (const s of sorted(program)) {
+    if (!s.speaker) continue;
+    if (!map.has(s.speaker)) map.set(s.speaker, { name: s.speaker, role: s.speakerRole || '', sessions: [] });
+    map.get(s.speaker).sessions.push(s);
+  }
+  return [...map.values()];
+}
+
+module.exports = { speakers, load, tr, current, upcoming, sorted, hhmm, line, start, end };
