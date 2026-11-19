@@ -1,0 +1,19 @@
+{
+  "name": "gpchat-bot-football",
+  "version": "1.0.0",
+  "description": "Bot Foot en direct : scores en direct, alertes de buts, calendrier, classements et buteurs (API-Football)",
+  "license": "MIT",
+  "private": true,
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@gpchat/bot": "file:../../packages/sdk",
+    "@gpchat/bot-ops": "file:../../packages/ops"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  }
+}

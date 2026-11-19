@@ -9,6 +9,7 @@ Open library of ready-to-run GPChat bots — fork them, run them, learn from the
 | [`bots/devfest`](bots/devfest) — **DevFest Guide** | `@devfest_guide_bot` | Programme, session en cours / prochaine, rappels 10 min avant, vote du public, FAQ, annonces, FR/EN | Docker, polling |
 | [`bots/dev-alerts`](bots/dev-alerts) — **Dev Alerts** | `@devalerts_bot` | GitHub, Uptime Kuma et webhooks JSON → groupe GPChat | Docker + HTTPS entrant |
 | [`bots/reminders`](bots/reminders) — **Rappels** | `@rappels_bot` | Rappels en langage naturel FR/EN (« demain à 9h appeler maman », « tous les lundis à 8h »), récurrences, fuseau par personne, report en un clic, groupes | Docker, polling |
+| [`bots/football`](bots/football) — **Foot en direct** | `@footdirect_bot` | Scores en direct, alertes à chaque but (buteur, minute), cartons rouges, mi-temps, fin de match ; calendrier, classements, buteurs ; CAN, CAF, Elite One, grands championnats ; FR/EN | Docker, polling, API-Football |
 | [`_template`](_template) | — | Bot d'écho minimal à copier | — |
 
 Le SDK Node.js officiel est inclus dans [`packages/sdk`](packages/sdk) (aucune dépendance).

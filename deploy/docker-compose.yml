@@ -48,8 +48,20 @@ services:
     ports: ["127.0.0.1:9104:9100"]
     volumes: ["reminders-data:/data"]
 
+  football:
+    <<: *bot
+    build: { context: .., dockerfile: bots/football/Dockerfile }
+    environment:
+      GPCHAT_API_KEY: ${FOOTBALL_GPCHAT_API_KEY:?clé API du bot football}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:?clé API-Football}
+      LIVE_POLL_SECONDS: ${FOOTBALL_LIVE_POLL_SECONDS:-60}
+      DEFAULT_TZ: ${FOOTBALL_DEFAULT_TZ:-Africa/Douala}
+    ports: ["127.0.0.1:9105:9100"]
+    volumes: ["football-data:/data"]
+
 volumes:
   cinema-data:
   devfest-data:
   alerts-data:
   reminders-data:
+  football-data:

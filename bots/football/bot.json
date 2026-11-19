@@ -1,0 +1,21 @@
+{
+  "name": "Foot en direct",
+  "username": "footdirect_bot",
+  "category": "sports",
+  "deliveryMode": "polling",
+  "description": "Le football en direct dans GPChat : scores en temps réel, alertes à chaque but de vos équipes (et cartons rouges, mi-temps, fin de match), calendrier, classements et buteurs. CAN, Ligue des champions CAF, Elite One, Ligue des champions, Premier League, Ligue 1, LaLiga, Serie A, Bundesliga… En groupe aussi.",
+  "commands": [
+    { "command": "direct", "description": "Matchs en cours" },
+    { "command": "matchs", "description": "Matchs du jour (ou demain, 25/12)" },
+    { "command": "equipe", "description": "Fiche d’une équipe" },
+    { "command": "suivre", "description": "Alertes en direct pour une équipe" },
+    { "command": "mesequipes", "description": "Mes équipes suivies" },
+    { "command": "classement", "description": "Classement d’une compétition" },
+    { "command": "buteurs", "description": "Meilleurs buteurs" },
+    { "command": "ligues", "description": "Compétitions disponibles" },
+    { "command": "fuseau", "description": "Mon fuseau horaire" },
+    { "command": "langue", "description": "Langue (fr ou en)" },
+    { "command": "aide", "description": "Toutes les commandes" },
+    { "command": "apropos", "description": "Sources et fréquence du direct" }
+  ]
+}
