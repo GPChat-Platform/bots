@@ -1,0 +1,13 @@
+{
+  "name": "gpchat-devfest-bot-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Guide DevFest sur Firebase Functions (webhook signé + rappels planifiés)",
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0"
+  }
+}
