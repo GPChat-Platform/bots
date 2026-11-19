@@ -12,6 +12,10 @@ Merci de proposer un bot ! / Thanks for contributing a bot!
 - [ ] `Dockerfile` construisant depuis la racine du dépôt (voir les bots existants).
 - [ ] Respect des [règles d'usage des bots](https://gpchat.app/en/developers/docs#bot-rules) : un bot répond, il ne démarche pas ; pas d'usurpation ; pas de collecte de données sans consentement.
 
+- [ ] Entrée sous `## [Non publié]` dans le `CHANGELOG.md` du bot (écrite pour l'utilisateur/l'exploitant) — voir [docs/VERSIONING.md](docs/VERSIONING.md).
+- [ ] Journaux JSON et sondes via `@gpchat/bot-ops` (`createOps`) : `/healthz`, `/readyz`, `/metrics`.
+- [ ] Messages de commit en [Conventional Commits](https://www.conventionalcommits.org/fr/) (`feat(cinema): …`, `fix(devfest): …`).
+
 ## Style
 
 - Node.js ≥ 20, CommonJS, sans dépendance inutile ; Markdown GPChat pour le texte, texte brut pour les légendes d'image.

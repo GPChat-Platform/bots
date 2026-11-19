@@ -1,0 +1,74 @@
+name: Release
+# Déclenché par une étiquette <bot>-vX.Y.Z (créée par scripts/release.mjs) : tests, image Docker sur GHCR, Release GitHub.
+on:
+  push:
+    tags:
+      - 'cinema-v*'
+      - 'devfest-v*'
+      - 'dev-alerts-v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Analyser l'étiquette
+        id: tag
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          BOT="${TAG%-v*}"
+          VERSION="${TAG##*-v}"
+          echo "bot=$BOT" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: La version de l'étiquette correspond à package.json
+        run: |
+          PKG=$(node -p "require('./bots/${{ steps.tag.outputs.bot }}/package.json').version")
+          if [ "$PKG" != "${{ steps.tag.outputs.version }}" ]; then
+            echo "::error::Étiquette ${{ steps.tag.outputs.version }} ≠ package.json $PKG"; exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run install:all
+      - run: npm test
+
+      - name: Notes de version extraites du CHANGELOG
+        run: |
+          node -e "
+          const fs=require('fs');
+          const t=fs.readFileSync('bots/${{ steps.tag.outputs.bot }}/CHANGELOG.md','utf8').replace(/\r\n/g,'\n');
+          const v='${{ steps.tag.outputs.version }}'.replace(/\./g,'\\\\.');
+          const m=new RegExp('## \\\\['+v+'\\\\][^\\\\n]*\\\\n([\\\\s\\\\S]*?)(?=\\\\n## \\\\[|\$)').exec(t);
+          if(!m||!m[1].trim()){console.error('Section de version absente du CHANGELOG');process.exit(1)}
+          fs.writeFileSync('RELEASE_NOTES.md',m[1].trim()+'\n');"
+
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: bots/${{ steps.tag.outputs.bot }}/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/gpchat-platform/bots-${{ steps.tag.outputs.bot }}:${{ steps.tag.outputs.version }}
+            ghcr.io/gpchat-platform/bots-${{ steps.tag.outputs.bot }}:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/GPChat-Platform/bots
+            org.opencontainers.image.version=${{ steps.tag.outputs.version }}
+
+      - name: Release GitHub
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --notes-file RELEASE_NOTES.md

@@ -6,6 +6,6 @@
   "private": true,
   "main": "src/index.js",
   "engines": { "node": ">=20" },
-  "dependencies": { "@gpchat/bot": "file:../../packages/sdk" },
+  "dependencies": { "@gpchat/bot": "file:../../packages/sdk", "@gpchat/bot-ops": "file:../../packages/ops" },
   "scripts": { "start": "node src/index.js", "test": "node --test" }
 }

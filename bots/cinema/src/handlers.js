@@ -22,7 +22,7 @@ function parseCommand(text) {
   return { name: COMMANDS[m[1].toLowerCase()] || 'unknown', arg: m[2].trim() };
 }
 
-function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, now = Date.now }) {
+function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, now = Date.now, log = { error() {}, warn() {} } }) {
   const quizzes = new Map(); // qid -> { correct, title, expires }
 
   const target = (c) => (c.groupId ? { groupId: c.groupId } : { to: c.to });
@@ -246,7 +246,7 @@ function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, n
       }
     } catch (e) {
       if (c) await say(c, t(L(userId), 'error'), { markdown: false }).catch(() => {});
-      if (process.env.NODE_ENV !== 'test') console.error('[cinema]', update.type, e && e.message);
+      log.error('échec de traitement', { type: update.type, error: e && e.message, status: e && e.status });
     }
   }
 

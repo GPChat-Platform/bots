@@ -1,0 +1,9 @@
+{
+  "name": "@gpchat/bot-ops",
+  "version": "1.0.0",
+  "description": "Observabilité commune des bots GPChat : journaux JSON, métriques Prometheus, sondes de santé (sans dépendance)",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": { "test": "node --test" }
+}

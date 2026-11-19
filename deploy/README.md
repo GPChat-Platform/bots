@@ -38,9 +38,13 @@ Dans un groupe GPChat, ajoutez le bot puis envoyez `/connecter` : il répond ave
 
 ## 4. DevFest Guide : le programme
 
-Le bot démarre avec `bots/devfest/data/program.template.json`. Copiez-le dans le volume `devfest-data` sous le nom `program.json`, remplissez les vraies sessions (heures avec fuseau, ex. `2026-11-28T09:00:00+01:00`) puis redémarrez le conteneur.
+Le bot embarque le **programme officiel du DevFest Douala 2026** (`bots/devfest/data/program.json`, source devfest.gdgdouala.org). Pour le corriger sans reconstruire l'image, déposez un `program.json` modifié dans le volume `devfest-data` (heures avec fuseau, ex. `2026-11-28T09:00:00+01:00`) puis redémarrez le conteneur. `program.template.json` sert de gabarit pour un autre événement.
 
-## 5. Mise à jour et sauvegarde
+## 5. Supervision
+
+Ces services écoutent `127.0.0.1:9101/9102/9103` (`/healthz`, `/readyz`, `/metrics`) ; `docker ps` affiche `(healthy)` / `(unhealthy)` grâce au `HEALTHCHECK`. Configuration Prometheus, alertes et dépannage : [../docs/OPERATIONS.md](../docs/OPERATIONS.md). Les journaux (JSON) tournent automatiquement (10 Mo × 5).
+
+## 6. Mise à jour et sauvegarde
 
 ```bash
 git pull && docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build

@@ -38,7 +38,8 @@ class Hooks {
   }
 }
 
-function createServer({ bot, hooks }) {
+function createServer({ bot, hooks, ops }) {
+  const count = (result, source) => ops && ops.metrics.inc('webhook_deliveries_total', { result, source }, 1, 'Webhooks entrants reçus');
   return http.createServer((req, res) => {
     const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
     if (req.method === 'GET' && req.url === '/healthz') return send(200, { ok: true });
@@ -54,16 +55,19 @@ function createServer({ bot, hooks }) {
       const raw = Buffer.concat(chunks);
       // Signature GitHub : si l'expéditeur en envoie une, elle doit être valide pour le secret de ce hook.
       const sig = req.headers['x-hub-signature-256'];
-      if (sig && !safeEqual(sig, sign256(hook.secret, raw))) return send(401, { error: 'bad signature' });
+      if (sig && !safeEqual(sig, sign256(hook.secret, raw))) { count('bad_signature', 'github'); return send(401, { error: 'bad signature' }); }
       let body;
       try { body = JSON.parse(raw.toString('utf8') || '{}'); } catch { return send(400, { error: 'invalid json' }); }
       const msg = format(req.headers, body);
-      if (!msg) return send(202, { ignored: true });
-      if (!hooks.allow(m[1])) return send(429, { error: 'rate limited' });
+      if (!msg) { count('ignored', req.headers['x-github-event'] ? 'github' : 'other'); return send(202, { ignored: true }); }
+      if (!hooks.allow(m[1])) { count('rate_limited', 'other'); return send(429, { error: 'rate limited' }); }
       try {
         await bot.sendGroupMessage(hook.groupId, msg.text, { markdown: true, buttons: msg.buttons });
+        count('delivered', req.headers['x-github-event'] ? 'github' : 'other');
         return send(200, { ok: true });
       } catch (e) {
+        count('delivery_failed', 'other');
+        if (ops) ops.log.error('livraison GPChat échouée', { error: e.message, status: e.status });
         return send(502, { error: 'gpchat delivery failed' });
       }
     });

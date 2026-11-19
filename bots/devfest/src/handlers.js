@@ -90,7 +90,7 @@ const ALIAS = {
   vote: 'vote', faq: 'faq', langue: 'lang', lang: 'lang', annonce: 'announce', announce: 'announce',
 };
 
-function createHandler({ bot, program, store, admins = [], now = Date.now }) {
+function createHandler({ bot, program, store, admins = [], now = Date.now, log: logger = { error() {}, warn() {} } }) {
   const ev = program.event;
   const tz = ev.timezone || 'Africa/Douala';
   const user = (id) => store.user(id);
@@ -175,7 +175,7 @@ function createHandler({ bot, program, store, admins = [], now = Date.now }) {
     const d = update.data || {};
     if (!d.from || d.type !== 'text') return;
     const m = /^\/([a-zA-Z]+)(?:@\w+)?\s*([\s\S]*)$/.exec(String(d.textMsg || '').trim());
-    const log = (e) => { if (process.env.NODE_ENV !== 'test') console.error('[devfest]', e.message); };
+    const log = (e) => logger.error('échec de traitement', { type: update.type, error: e.message });
     if (update.type === 'message.received') {
       if (!m) return;
       const name = ALIAS[m[1].toLowerCase()] || 'unknown';

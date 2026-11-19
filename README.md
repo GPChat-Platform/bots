@@ -37,6 +37,11 @@ bots/<nom>/
   .env.example    variables d'environnement (jamais de secret dans le dépôt)
 ```
 
+## Exploiter et faire évoluer
+
+- [Journaux, supervision, alertes, dépannage](docs/OPERATIONS.md) — chaque bot expose `/healthz`, `/readyz`, `/metrics` et écrit des journaux JSON.
+- [Versionnage et changelog](docs/VERSIONING.md) — SemVer par bot, `CHANGELOG.md`, `node scripts/release.mjs`, images GHCR.
+
 ## Déployer
 
 Voir [`deploy/README.md`](deploy/README.md) (Docker Compose, reverse proxy, mise à jour, sauvegarde des données).
