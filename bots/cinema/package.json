@@ -1,0 +1,11 @@
+{
+  "name": "gpchat-bot-cinema",
+  "version": "1.0.0",
+  "description": "Bot Ciné Club : films, acteurs, tendances, où voir, quiz (TMDB + OMDb)",
+  "license": "MIT",
+  "private": true,
+  "main": "src/index.js",
+  "engines": { "node": ">=20" },
+  "dependencies": { "@gpchat/bot": "file:../../packages/sdk" },
+  "scripts": { "start": "node src/index.js", "test": "node --test \"test/*.test.js\"" }
+}

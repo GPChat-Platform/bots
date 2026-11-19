@@ -1,0 +1,42 @@
+# Les trois bots sur un serveur Docker. Lancement depuis la racine du dépôt :
+#   cp deploy/.env.example deploy/.env   (puis renseignez les clés)
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
+x-bot: &bot
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: ["no-new-privileges:true"]
+  mem_limit: 256m
+  cpus: 0.5
+
+services:
+  cinema:
+    <<: *bot
+    build: { context: .., dockerfile: bots/cinema/Dockerfile }
+    environment:
+      GPCHAT_API_KEY: ${CINEMA_GPCHAT_API_KEY:?clé API du bot Ciné Club}
+      TMDB_TOKEN: ${TMDB_TOKEN:?jeton TMDB}
+      OMDB_API_KEY: ${OMDB_API_KEY:-}
+    volumes: ["cinema-data:/data"]
+
+  devfest:
+    <<: *bot
+    build: { context: .., dockerfile: bots/devfest/Dockerfile }
+    environment:
+      GPCHAT_API_KEY: ${DEVFEST_GPCHAT_API_KEY:?clé API du bot DevFest Guide}
+      ADMIN_IDS: ${DEVFEST_ADMIN_IDS:-}
+    volumes: ["devfest-data:/data"]   # déposez-y program.json pour remplacer l'exemple
+
+  dev-alerts:
+    <<: *bot
+    build: { context: .., dockerfile: bots/dev-alerts/Dockerfile }
+    environment:
+      GPCHAT_API_KEY: ${ALERTS_GPCHAT_API_KEY:?clé API du bot Dev Alerts}
+      PUBLIC_URL: ${ALERTS_PUBLIC_URL:?adresse publique HTTPS, ex. https://alertes.example.com}
+    ports: ["127.0.0.1:18090:8080"]   # exposé uniquement en local : mettez un reverse proxy HTTPS devant
+    volumes: ["alerts-data:/data"]
+
+volumes:
+  cinema-data:
+  devfest-data:
+  alerts-data:

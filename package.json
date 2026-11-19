@@ -1,0 +1,10 @@
+{
+  "name": "gpchat-bots",
+  "private": true,
+  "license": "MIT",
+  "description": "Bibliothèque ouverte de bots GPChat",
+  "scripts": {
+    "install:all": "npm --prefix bots/cinema install && npm --prefix bots/devfest install && npm --prefix bots/dev-alerts install && npm --prefix _template install",
+    "test": "npm --prefix packages/sdk test && npm --prefix bots/cinema test && npm --prefix bots/devfest test && npm --prefix bots/dev-alerts test && npm --prefix _template test"
+  }
+}

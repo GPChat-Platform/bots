@@ -1,0 +1,25 @@
+{
+  "_comment": "EXEMPLE À REMPLACER : copiez ce fichier en data/program.json et mettez le vrai programme (heures avec fuseau, ex. 2026-11-28T09:00:00+01:00).",
+  "event": {
+    "name": "DevFest Douala 2026",
+    "tagline": { "fr": "Hackathon et vote du public", "en": "Hackathon and public vote" },
+    "date": "2026-11-28",
+    "timezone": "Africa/Douala",
+    "venue": { "fr": "Lieu à confirmer", "en": "Venue to be confirmed" },
+    "voteUrl": "https://gpchat.app/devfest",
+    "website": "https://gpchat.app/devfest"
+  },
+  "sessions": [
+    { "id": "accueil", "start": "2026-11-28T08:30:00+01:00", "end": "2026-11-28T09:30:00+01:00", "title": { "fr": "Accueil et badges", "en": "Welcome and badges" }, "room": { "fr": "Entrée", "en": "Entrance" } },
+    { "id": "ouverture", "start": "2026-11-28T09:30:00+01:00", "end": "2026-11-28T10:00:00+01:00", "title": { "fr": "Ouverture du DevFest", "en": "DevFest opening" }, "room": { "fr": "Salle principale", "en": "Main hall" } },
+    { "id": "hackathon", "start": "2026-11-28T10:00:00+01:00", "end": "2026-11-28T15:00:00+01:00", "title": { "fr": "Hackathon", "en": "Hackathon" }, "room": { "fr": "Salle principale", "en": "Main hall" } },
+    { "id": "pitchs", "start": "2026-11-28T15:00:00+01:00", "end": "2026-11-28T16:30:00+01:00", "title": { "fr": "Présentations des équipes", "en": "Team pitches" }, "room": { "fr": "Salle principale", "en": "Main hall" } },
+    { "id": "vote", "start": "2026-11-28T16:30:00+01:00", "end": "2026-11-28T17:15:00+01:00", "title": { "fr": "Vote du public dans l'application GPChat", "en": "Public vote in the GPChat app" }, "room": { "fr": "Partout", "en": "Everywhere" } },
+    { "id": "resultats", "start": "2026-11-28T17:15:00+01:00", "end": "2026-11-28T18:00:00+01:00", "title": { "fr": "Résultats et remise des prix", "en": "Results and awards" }, "room": { "fr": "Salle principale", "en": "Main hall" } }
+  ],
+  "faq": [
+    { "q": { "fr": "Comment voter ?", "en": "How do I vote?" }, "a": { "fr": "Installez GPChat, créez votre compte, scannez le QR code du DevFest puis touchez « Rejoindre le groupe ». Le bandeau « Votez » apparaît en haut de vos discussions à l'ouverture du vote. Un seul vote par compte.", "en": "Install GPChat, create your account, scan the DevFest QR code then tap “Join the group”. The “Vote” banner appears at the top of your chats when voting opens. One vote per account." } },
+    { "q": { "fr": "Je ne reçois pas le SMS de connexion", "en": "I don't get the sign-in SMS" }, "a": { "fr": "Connectez-vous avec Google, Apple ou une adresse e-mail à la place.", "en": "Sign in with Google, Apple or an e-mail address instead." } },
+    { "q": { "fr": "Peut-on créer un bot GPChat pendant l'événement ?", "en": "Can we build a GPChat bot during the event?" }, "a": { "fr": "Oui : écrivez à @gpchat_forge et tapez /newbot, ou ouvrez la console développeur sur gpchat.app/developers/console.", "en": "Yes: message @gpchat_forge and type /newbot, or open the developer console at gpchat.app/developers/console." } }
+  ]
+}

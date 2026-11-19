@@ -1,0 +1,55 @@
+# GPChat Bots — bibliothèque ouverte
+
+Des bots GPChat **complets, testés et libres** (licence MIT), prêts à lancer ou à copier comme point de départ.
+Open library of ready-to-run GPChat bots — fork them, run them, learn from them.
+
+| Bot | @username | Ce qu'il fait | Hébergement type |
+|---|---|---|---|
+| [`bots/cinema`](bots/cinema) — **Ciné Club** | `@cineclub_bot` | Fiches de films (affiche, notes IMDb / Rotten Tomatoes / Metacritic), acteurs, tendances, sorties, où regarder en streaming, comparaison, quiz, liste « à voir », FR/EN | Docker, polling |
+| [`bots/devfest`](bots/devfest) — **DevFest Guide** | `@devfest_guide_bot` | Programme, session en cours / prochaine, rappels 10 min avant, vote du public, FAQ, annonces, FR/EN | Docker, polling |
+| [`bots/dev-alerts`](bots/dev-alerts) — **Dev Alerts** | `@devalerts_bot` | GitHub, Uptime Kuma et webhooks JSON → groupe GPChat | Docker + HTTPS entrant |
+| [`_template`](_template) | — | Bot d'écho minimal à copier | — |
+
+Le SDK Node.js officiel est inclus dans [`packages/sdk`](packages/sdk) (aucune dépendance).
+
+## Démarrer en 5 minutes
+
+```bash
+git clone https://github.com/GPChat-Platform/bots && cd bots
+npm run install:all && npm test           # tout est testé sans réseau
+cp -r _template bots/mon-bot               # votre premier bot
+```
+
+1. **Créez le bot** : écrivez à **@gpchat_forge** → `/newbot` (ou la [console développeur](https://gpchat.app/developers/console)).
+2. **Mode polling** : `/setmode polling` — aucun serveur public ni tunnel nécessaire, même en local.
+3. Lancez `GPCHAT_API_KEY=gpk_live_… npm start` dans le dossier du bot.
+4. Documentation de l'API : [FR](https://gpchat.app/developers/docs) · [EN](https://gpchat.app/en/developers/docs).
+
+## Organisation d'un bot
+
+```
+bots/<nom>/
+  bot.json        profil : nom, @username, catégorie, description, liste des commandes
+  assets/         avatar.svg (source) et avatar.png (512×512)
+  src/            logique (sans réseau, testable) + index.js (démarrage)
+  test/           tests node:test, exécutés par la CI
+  Dockerfile      construit depuis la racine du dépôt
+  .env.example    variables d'environnement (jamais de secret dans le dépôt)
+```
+
+## Déployer
+
+Voir [`deploy/README.md`](deploy/README.md) (Docker Compose, reverse proxy, mise à jour, sauvegarde des données).
+
+## Contribuer
+
+Ajoutez votre bot en pull request : voir [CONTRIBUTING.md](CONTRIBUTING.md).
+Règles de publication GPChat : un nom ou @username ne peut pas contenir *gpchat, forge, official, admin, verified…* ; la description doit faire au moins 20 caractères.
+
+## Sources de données et mentions
+
+Ciné Club utilise l'API TMDB (*This product uses the TMDB API but is not endorsed or certified by TMDB*), OMDb pour les notes IMDb / Rotten Tomatoes / Metacritic, et JustWatch (via TMDB) pour le streaming. Vérifiez les conditions d'usage de chaque fournisseur avant un usage commercial.
+
+## Licence
+
+MIT — voir [LICENSE](LICENSE).

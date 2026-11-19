@@ -1,0 +1,25 @@
+{
+  "name": "Ciné Club",
+  "username": "cineclub_bot",
+  "category": "entertainment",
+  "deliveryMode": "polling",
+  "description": "Votre guide cinéma : fiches de films avec affiche et notes IMDb / Rotten Tomatoes, acteurs, tendances, sorties, où regarder en streaming, quiz et liste « à voir ». Données TMDB et OMDb.",
+  "commands": [
+    { "command": "film", "description": "Fiche d'un film : /film Black Panther" },
+    { "command": "acteur", "description": "Biographie et films d'un acteur : /acteur Lupita Nyong'o" },
+    { "command": "tendances", "description": "Films du moment" },
+    { "command": "bientot", "description": "Prochaines sorties" },
+    { "command": "hasard", "description": "Un film au hasard : /hasard thriller" },
+    { "command": "ou_voir", "description": "Où regarder un film (streaming)" },
+    { "command": "similaires", "description": "Films dans le même esprit" },
+    { "command": "comparer", "description": "Comparer deux films : /comparer A | B" },
+    { "command": "liste", "description": "Votre liste de films à voir" },
+    { "command": "ajouter", "description": "Ajouter un film à votre liste" },
+    { "command": "retirer", "description": "Retirer un film de votre liste (numéro)" },
+    { "command": "quiz", "description": "Devinez le film" },
+    { "command": "langue", "description": "Langue : /langue fr ou en" },
+    { "command": "pays", "description": "Pays pour le streaming : /pays CM" },
+    { "command": "aide", "description": "Liste des commandes" },
+    { "command": "apropos", "description": "Sources des données" }
+  ]
+}

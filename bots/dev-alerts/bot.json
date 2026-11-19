@@ -1,0 +1,14 @@
+{
+  "name": "Dev Alerts",
+  "username": "devalerts_bot",
+  "category": "productivity",
+  "deliveryMode": "polling",
+  "description": "Recevez dans un groupe GPChat les alertes de vos outils : GitHub (push, PR, issues, CI, versions), Uptime Kuma et tout service capable d'envoyer un webhook JSON. Ajoutez le bot au groupe puis tapez /connecter.",
+  "commands": [
+    { "command": "connecter", "description": "Créer l'adresse webhook de ce groupe" },
+    { "command": "etat", "description": "Webhooks actifs pour ce groupe" },
+    { "command": "revoquer", "description": "Supprimer vos webhooks de ce groupe" },
+    { "command": "test", "description": "Vérifier que le bot peut écrire ici" },
+    { "command": "aide", "description": "Aide et formats pris en charge" }
+  ]
+}

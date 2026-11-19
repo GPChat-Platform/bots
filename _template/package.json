@@ -1,0 +1,11 @@
+{
+  "name": "gpchat-bot-template",
+  "version": "1.0.0",
+  "description": "Modèle de départ : un bot d'écho en mode polling",
+  "license": "MIT",
+  "private": true,
+  "main": "src/index.js",
+  "engines": { "node": ">=20" },
+  "dependencies": { "@gpchat/bot": "file:../packages/sdk" },
+  "scripts": { "start": "node src/index.js", "test": "node --test \"test/*.test.js\"" }
+}

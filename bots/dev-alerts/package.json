@@ -1,0 +1,11 @@
+{
+  "name": "gpchat-bot-dev-alerts",
+  "version": "1.0.0",
+  "description": "Bot GPChat Alertes dev : GitHub, Uptime Kuma et webhooks génériques vers un groupe",
+  "license": "MIT",
+  "private": true,
+  "main": "src/index.js",
+  "engines": { "node": ">=20" },
+  "dependencies": { "@gpchat/bot": "file:../../packages/sdk" },
+  "scripts": { "start": "node src/index.js", "test": "node --test \"test/*.test.js\"" }
+}
