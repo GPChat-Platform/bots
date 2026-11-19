@@ -64,7 +64,8 @@ class GPChatBot {
     if (typeof this.fetch !== 'function') throw new Error('fetch indisponible : Node.js 18+ requis (ou passez options.fetch)');
   }
 
-  async request(method, path, { body, query, timeoutMs } = {}) {
+  async request(method, path, { body, query, timeoutMs, retries } = {}) {
+    const maxRetries = retries ?? this.maxRetries;
     const url = new URL(this.baseUrl + path);
     for (const [k, v] of Object.entries(query || {})) if (v !== undefined) url.searchParams.set(k, String(v));
     let attempt = 0;
@@ -81,7 +82,7 @@ class GPChatBot {
         const json = await res.json().catch(() => ({}));
         if (res.ok) return json.data ?? json;
         // 429 et 5xx : nouvel essai avec repli, en respectant Retry-After s'il est fourni.
-        if ((res.status === 429 || res.status >= 500) && attempt < this.maxRetries) {
+        if ((res.status === 429 || res.status >= 500) && attempt < maxRetries) {
           const retryAfter = Number(res.headers && res.headers.get && res.headers.get('retry-after'));
           await new Promise((r) => setTimeout(r, (retryAfter > 0 ? retryAfter * 1000 : 500 * 2 ** attempt)));
           attempt++;
@@ -90,7 +91,7 @@ class GPChatBot {
         throw new GPChatError(json.message || `HTTP ${res.status}`, { status: res.status, code: json.code, details: json.details });
       } catch (err) {
         if (err instanceof GPChatError) throw err;
-        if (attempt < this.maxRetries) { await new Promise((r) => setTimeout(r, 500 * 2 ** attempt)); attempt++; continue; }
+        if (attempt < maxRetries) { await new Promise((r) => setTimeout(r, 500 * 2 ** attempt)); attempt++; continue; }
         throw new GPChatError(err.name === 'AbortError' ? 'Délai dépassé' : err.message, { code: 'network' });
       } finally {
         clearTimeout(timer);
@@ -122,9 +123,12 @@ class GPChatBot {
     return this.request('POST', '/messages/delete', { body: { ...this._target(target), msgId } });
   }
 
-  /** Affiche « écrit… » ; l'appel dure `seconds` (1-10). */
+  /**
+   * Affiche « écrit… » ; l'appel dure `seconds` (1-10). Purement cosmétique : aucun nouvel essai
+   * (sous forte charge, réessayer un indicateur de saisie ne ferait que consommer le quota).
+   */
   sendChatAction(to, action = 'typing', seconds = 5) {
-    return this.request('POST', '/chat/action', { body: { to, action, seconds }, timeoutMs: (seconds + 30) * 1000 });
+    return this.request('POST', '/chat/action', { body: { to, action, seconds }, timeoutMs: (seconds + 30) * 1000, retries: 0 });
   }
 
   /** Mode polling : { updates, hasMore }. `ack` = identifiants déjà traités. */

@@ -1,6 +1,6 @@
 {
   "name": "@gpchat/bot",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "SDK officiel GPChat pour créer des bots (envoi, boutons, polling, webhooks signés)",
   "main": "index.js",
   "types": "index.d.ts",

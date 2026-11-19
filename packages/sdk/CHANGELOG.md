@@ -4,6 +4,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.1.1] — 2026-11-19
+
+### Corrigé
+- `sendChatAction()` ne réessaie plus (indicateur cosmétique) : sous forte charge, les nouveaux essais sur 429 consommaient le quota de l'application (test de charge 500 utilisateurs).
+- `request()` accepte `retries` pour régler les nouveaux essais appel par appel.
+
 ## [1.1.0] — 2026-11-19
 
 ### Ajouté
