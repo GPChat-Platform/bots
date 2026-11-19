@@ -145,7 +145,7 @@ test('/pays et /langue : préférences et pays sans offre', async () => {
   await dm('/langue en');
   assert.match(sent.at(-1).text, /English/);
   await dm('/help');
-  assert.match(sent.at(-1).text, /Commands/);
+  assert.match(sent.at(-1).text, /Search/);
   await dm('/langue xx');
   assert.match(sent.at(-1).text, /Available languages/);
   await dm('/pays 12');
@@ -226,4 +226,30 @@ test('client OMDb : notes, identifiant invalide, panne = null', async () => {
   const down = new Omdb({ apiKey: 'K', fetchImpl: async () => { throw new Error('réseau'); } });
   assert.equal(await down.byImdbId('tt2'), null);
   assert.equal(await new Omdb({ apiKey: '' }).byImdbId('tt3'), null);
+});
+
+test('aide : sections courtes et boutons d\'accès rapide qui déclenchent les commandes', async () => {
+  const { sent, dm, h } = setup();
+  await dm('/aide');
+  const m = sent.at(-1);
+  assert.match(m.text, /🔎 \*\*Chercher\*\*/);
+  assert.doesNotMatch(m.text, /•/);
+  assert.deepEqual(m.o.buttons.flat().map((b) => b.callbackData), ['x:trending', 'x:random', 'x:quiz', 'x:list']);
+  await h.handle({ type: 'callback.received', data: { from: 'u1', chatId: 'u1', msgId: 'H1', data: 'x:trending' } });
+  assert.match(sent.at(-1).text, /Tendances/);
+  await h.handle({ type: 'callback.received', data: { from: 'u1', chatId: 'u1', msgId: 'H1', data: 'x:inconnu' } });
+});
+
+test('« écrit… » ne retarde pas la réponse', async () => {
+  const { sent, h } = setup();
+  let release;
+  const slow = new Promise((r) => { release = r; });
+  const bot2 = { sendMessage: async (to, text, o) => sent.push({ to, text, o }), send: async (b) => sent.push({ kind: 'raw', body: b }), sendChatAction: () => slow };
+  const { createHandler: ch } = require('../src/handlers');
+  const { Store: S2 } = require('../src/store');
+  const fast = ch({ bot: bot2, tmdb: { searchMovie: async () => [] }, omdb: null, store: new S2(null), button });
+  await fast.handle({ type: 'message.received', data: { from: 'u9', chatId: 'u9', type: 'text', textMsg: '/aide' } });
+  assert.match(sent.at(-1).text, /Ciné Club/);
+  release();
+  void h;
 });

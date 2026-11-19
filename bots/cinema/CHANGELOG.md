@@ -4,6 +4,15 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.1.0] — 2026-11-19
+
+### Modifié
+- Aide repensée : sections courtes (Chercher, Découvrir, Regarder, Ma liste, Réglages) et boutons d'accès rapide (Tendances, Au hasard, Quiz, Ma liste) sous /start et /aide.
+- Descriptions des commandes du menu « / » raccourcies.
+
+### Corrigé
+- Réponses plus rapides : l'indicateur « écrit… » n'est plus attendu avant de répondre (environ 3,5 s gagnées par message).
+
 ## [1.0.0] — 2026-11-19
 
 ### Ajouté

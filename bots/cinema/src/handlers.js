@@ -63,14 +63,19 @@ function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, n
     return say(c, t(lang, 'pick', { q: query }), { buttons: F.pickButtons(results, button) });
   }
 
+  const quickButtons = (lang) => [
+    [button.callback(t(lang, 'btnTrending'), 'x:trending'), button.callback(t(lang, 'btnRandom'), 'x:random')],
+    [button.callback(t(lang, 'btnQuiz'), 'x:quiz'), button.callback(t(lang, 'btnMyList'), 'x:list')],
+  ];
+
   const listMessage = (lang, head, movies) => `${head}\n\n${movies.slice(0, 10).map((m, i) => F.listLine(m, i, lang)).join('\n')}`;
 
   async function commands(c, userId, cmd) {
     const u = prefsOf(userId);
     const lang = u.lang;
     switch (cmd.name) {
-      case 'start': return say(c, t(lang, 'welcome'));
-      case 'help': return say(c, t(lang, 'help'));
+      case 'start': return say(c, t(lang, 'welcome'), { buttons: quickButtons(lang) });
+      case 'help': return say(c, t(lang, 'help'), { buttons: quickButtons(lang) });
       case 'about': return say(c, t(lang, 'about'), { markdown: false });
       case 'free':
       case 'movie': return searchAndShow(c, userId, cmd.arg);
@@ -218,6 +223,7 @@ function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, n
       return undefined;
     }
     if (kind === 'qn') return startQuiz(c, userId);
+    if (kind === 'x' && ['trending', 'random', 'quiz', 'list'].includes(a)) return commands(c, userId, { name: a, arg: '' });
     return undefined;
   }
 
@@ -232,7 +238,7 @@ function createHandler({ bot, tmdb, omdb, store, button, random = Math.random, n
         c = { to: d.chatId || d.from };
         const cmd = parseCommand(d.textMsg);
         if (!cmd || d.type !== 'text') return;
-        await bot.sendChatAction(c.to, 'typing', 2).catch(() => {});
+        bot.sendChatAction(c.to, 'typing', 3).catch(() => {}); // non attendu : l'appel ne rend la main qu'à la fin de l'animation
         await commands(c, userId, cmd);
       } else if (update.type === 'group_message.received') {
         c = { groupId: d.groupId };

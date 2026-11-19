@@ -3,21 +3,9 @@
 
 const STRINGS = {
   fr: {
-    welcome: 'Bienvenue sur **Ciné Club** 🎬\nCherchez un film, un acteur, découvrez les tendances et gardez votre liste de films à voir.\n\nTapez /aide pour la liste des commandes, ou envoyez simplement un titre.',
-    help:
-      '**Commandes**\n' +
-      '• `/film titre` — fiche d\'un film (affiche, notes, casting)\n' +
-      '• `/acteur nom` — biographie et films connus\n' +
-      '• `/tendances` — films du moment\n' +
-      '• `/bientot` — prochaines sorties\n' +
-      '• `/hasard [genre]` — un film au hasard (ex. `/hasard thriller`)\n' +
-      '• `/ou_voir titre` — où le regarder (streaming)\n' +
-      '• `/similaires titre` — films dans le même esprit\n' +
-      '• `/comparer film A | film B` — comparer deux films\n' +
-      '• `/liste` · `/ajouter titre` · `/retirer numéro` — votre liste « à voir »\n' +
-      '• `/quiz` — devinez le film\n' +
-      '• `/langue fr|en` · `/pays CM` — vos préférences\n' +
-      '• `/apropos` — sources des données',
+    welcome: 'Bienvenue sur **Ciné Club** 🎬\nEnvoyez un titre de film ou un nom d’acteur, ou choisissez ci-dessous. /aide liste toutes les commandes.',
+    help: "🎬 **Ciné Club** — tapez simplement un titre, ou :\n\n🔎 **Chercher**\n/film Dune · /acteur Zendaya\n\n✨ **Découvrir**\n/tendances · /bientot · /hasard thriller · /quiz\n\n📺 **Regarder**\n/ou_voir Dune · /similaires Dune\n/comparer Dune | Avatar\n\n📝 **Ma liste**\n/liste · /ajouter Dune · /retirer 1\n\n⚙️ **Réglages**\n/langue en · /pays CM · /apropos",
+    btnTrending: '🔥 Tendances', btnRandom: '🎲 Au hasard', btnQuiz: '🎯 Quiz', btnMyList: '📝 Ma liste',
     about: 'Données de films : TMDB. Notes IMDb, Rotten Tomatoes et Metacritic : OMDb.\nCe produit utilise l\'API TMDB mais n\'est ni approuvé ni certifié par TMDB. Informations de streaming : JustWatch (via TMDB).\nCode source libre : https://github.com/GPChat-Platform/bots',
     askTitle: 'Quel film ? Exemple : `/film Black Panther`',
     askPerson: 'Quel acteur ou quelle actrice ? Exemple : `/acteur Lupita Nyong\'o`',
@@ -53,21 +41,9 @@ const STRINGS = {
     anon: 'Anonyme', minutes: 'min',
   },
   en: {
-    welcome: 'Welcome to **Ciné Club** 🎬\nLook up a movie or an actor, see what is trending and keep a watchlist.\n\nType /help for the command list, or simply send a title.',
-    help:
-      '**Commands**\n' +
-      '• `/movie title` — movie card (poster, ratings, cast)\n' +
-      '• `/actor name` — biography and best-known films\n' +
-      '• `/trending` — what is hot this week\n' +
-      '• `/upcoming` — coming soon\n' +
-      '• `/random [genre]` — a random movie (e.g. `/random thriller`)\n' +
-      '• `/where title` — where to watch (streaming)\n' +
-      '• `/similar title` — movies in the same spirit\n' +
-      '• `/compare movie A | movie B` — compare two movies\n' +
-      '• `/list` · `/add title` · `/remove number` — your watchlist\n' +
-      '• `/quiz` — guess the movie\n' +
-      '• `/lang fr|en` · `/country US` — your preferences\n' +
-      '• `/about` — data sources',
+    welcome: 'Welcome to **Ciné Club** 🎬\nSend a movie title or an actor name, or pick below. /help lists every command.',
+    help: "🎬 **Ciné Club** — just type a title, or:\n\n🔎 **Search**\n/movie Dune · /actor Zendaya\n\n✨ **Discover**\n/trending · /upcoming · /random thriller · /quiz\n\n📺 **Watch**\n/where Dune · /similar Dune\n/compare Dune | Avatar\n\n📝 **My list**\n/list · /add Dune · /remove 1\n\n⚙️ **Settings**\n/lang fr · /country US · /about",
+    btnTrending: '🔥 Trending', btnRandom: '🎲 Random', btnQuiz: '🎯 Quiz', btnMyList: '📝 My list',
     about: 'Movie data: TMDB. IMDb, Rotten Tomatoes and Metacritic ratings: OMDb.\nThis product uses the TMDB API but is not endorsed or certified by TMDB. Streaming information: JustWatch (via TMDB).\nOpen source: https://github.com/GPChat-Platform/bots',
     askTitle: 'Which movie? Example: `/movie Black Panther`',
     askPerson: 'Which actor or actress? Example: `/actor Lupita Nyong\'o`',
