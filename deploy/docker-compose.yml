@@ -58,6 +58,7 @@ services:
       GPCHAT_API_KEY: ${FOOTBALL_GPCHAT_API_KEY:-}
       API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:-}
       LIVE_POLL_SECONDS: ${FOOTBALL_LIVE_POLL_SECONDS:-60}
+      QUOTA_RESERVE: ${FOOTBALL_QUOTA_RESERVE:-50}   # offre gratuite (100/jour) : 10
       DEFAULT_TZ: ${FOOTBALL_DEFAULT_TZ:-Africa/Douala}
     ports: ["127.0.0.1:9105:9100"]
     volumes: ["football-data:/data"]
