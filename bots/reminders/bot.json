@@ -1,0 +1,17 @@
+{
+  "name": "Rappels",
+  "username": "rappels_bot",
+  "category": "productivity",
+  "deliveryMode": "polling",
+  "description": "Vos rappels en langage naturel, en français ou en anglais : « demain à 9h appeler maman », « tous les lundis à 8h réunion », « le 5 de chaque mois payer le loyer ». Récurrences, report en un clic, fuseau horaire par personne, rappels de groupe.",
+  "commands": [
+    { "command": "rappel", "description": "Créer un rappel (ou écrivez simplement)" },
+    { "command": "liste", "description": "Mes rappels à venir" },
+    { "command": "supprimer", "description": "Supprimer un rappel (numéro)" },
+    { "command": "fuseau", "description": "Mon fuseau horaire" },
+    { "command": "exemples", "description": "Formulations comprises" },
+    { "command": "langue", "description": "Langue (fr ou en)" },
+    { "command": "aide", "description": "Toutes les commandes" },
+    { "command": "apropos", "description": "Fonctionnement et données" }
+  ]
+}

@@ -8,6 +8,7 @@ Open library of ready-to-run GPChat bots — fork them, run them, learn from the
 | [`bots/cinema`](bots/cinema) — **Ciné Club** | `@cineclub_bot` | Fiches de films (affiche, notes IMDb / Rotten Tomatoes / Metacritic), acteurs, tendances, sorties, où regarder en streaming, comparaison, quiz, liste « à voir », FR/EN | Docker, polling |
 | [`bots/devfest`](bots/devfest) — **DevFest Guide** | `@devfest_guide_bot` | Programme, session en cours / prochaine, rappels 10 min avant, vote du public, FAQ, annonces, FR/EN | Docker, polling |
 | [`bots/dev-alerts`](bots/dev-alerts) — **Dev Alerts** | `@devalerts_bot` | GitHub, Uptime Kuma et webhooks JSON → groupe GPChat | Docker + HTTPS entrant |
+| [`bots/reminders`](bots/reminders) — **Rappels** | `@rappels_bot` | Rappels en langage naturel FR/EN (« demain à 9h appeler maman », « tous les lundis à 8h »), récurrences, fuseau par personne, report en un clic, groupes | Docker, polling |
 | [`_template`](_template) | — | Bot d'écho minimal à copier | — |
 
 Le SDK Node.js officiel est inclus dans [`packages/sdk`](packages/sdk) (aucune dépendance).

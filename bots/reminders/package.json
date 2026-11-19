@@ -1,0 +1,19 @@
+{
+  "name": "gpchat-bot-reminders",
+  "version": "1.0.0",
+  "description": "Bot Rappels : rappels en langage naturel (français / anglais), récurrences, fuseau horaire par utilisateur",
+  "license": "MIT",
+  "private": true,
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@gpchat/bot": "file:../../packages/sdk",
+    "@gpchat/bot-ops": "file:../../packages/ops"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  }
+}

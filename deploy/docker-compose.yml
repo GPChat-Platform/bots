@@ -39,7 +39,17 @@ services:
     ports: ["127.0.0.1:18090:8080", "127.0.0.1:9103:9100"]   # webhooks entrants (derrière un reverse proxy HTTPS) et exploitation
     volumes: ["alerts-data:/data"]
 
+  reminders:
+    <<: *bot
+    build: { context: .., dockerfile: bots/reminders/Dockerfile }
+    environment:
+      GPCHAT_API_KEY: ${REMINDERS_GPCHAT_API_KEY:?clé API du bot reminders}
+      DEFAULT_TZ: ${REMINDERS_DEFAULT_TZ:-Africa/Douala}
+    ports: ["127.0.0.1:9104:9100"]
+    volumes: ["reminders-data:/data"]
+
 volumes:
   cinema-data:
   devfest-data:
   alerts-data:
+  reminders-data:

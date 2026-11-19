@@ -6,6 +6,7 @@ on:
       - 'cinema-v*'
       - 'devfest-v*'
       - 'dev-alerts-v*'
+      - 'reminders-v*'
 
 permissions:
   contents: write
