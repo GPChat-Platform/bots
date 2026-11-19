@@ -315,7 +315,8 @@ function createHandler({ bot, api, tracker, store, button, version = '', now = D
       }
     } catch (e) {
       const lang = prefs(userId).lang;
-      if (c) await say(c, t(lang, e && e.code === 'quota' ? 'quota' : 'error'), { markdown: false }).catch(() => {});
+      const key = e && (e.code === 'quota' || e.code === 'plan') ? e.code : 'error';
+      if (c) await say(c, t(lang, key), { markdown: false }).catch(() => {});
       log.error('échec de traitement', { type: update.type, error: e && e.message, code: e && e.code, status: e && e.status });
     }
   }

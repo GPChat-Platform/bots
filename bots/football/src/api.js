@@ -92,7 +92,8 @@ class FootballApi {
     const errs = json && json.errors && (Array.isArray(json.errors) ? json.errors : Object.values(json.errors));
     if (errs && errs.length) {
       const msg = errs.map(String).join(' ; ');
-      const code = /request|limit|quota/i.test(msg) ? 'quota' : /token|key|subscri/i.test(msg) ? 'auth' : 'api';
+      // « plan » : donnée hors de l'offre souscrite (ex. saison en cours en offre gratuite) — ce n'est pas une panne.
+      const code = /plan|do not have access/i.test(msg) ? 'plan' : /request|limit|quota/i.test(msg) ? 'quota' : /token|key|subscri/i.test(msg) ? 'auth' : 'api';
       if (code === 'quota') this.quota.dailyRemaining = 0;
       throw new ApiError(msg, { code });
     }

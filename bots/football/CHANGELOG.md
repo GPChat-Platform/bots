@@ -14,4 +14,5 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 - Heures dans le fuseau de chaque utilisateur, français et anglais.
 - Économie de quota API-Football : un seul appel partagé pour tout le direct, intervalle ajusté au quota journalier, cache par type de donnée, requêtes identiques fusionnées, mode dégradé (cache seul) sous la réserve `QUOTA_RESERVE`.
 - Fiabilité : événements déjà notifiés mémorisés (pas de doublon après un redémarrage), match disparu du direct relu pour le score final, file d'envoi à débit limité, conversation bloquée désabonnée.
+- Message clair quand une donnée n'est pas incluse dans l'offre API-Football (ex. classements de la saison en cours en offre gratuite).
 - Exploitation : `/readyz` (polling, suivi du direct, quota), métriques `gpchat_bot_football_*` (appels API, quota restant, alertes, notifications, abonnés).

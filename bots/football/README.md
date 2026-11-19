@@ -22,7 +22,7 @@ Le bot utilise [API-Football](https://www.api-football.com) (api-sports.io) : to
 
 | Offre | Quota | Usage conseillé |
 |---|---|---|
-| Gratuite | 100 requêtes/jour | développement et tests (le direct est alors relevé toutes les ~20 min) |
+| Gratuite | 100 requêtes/jour | développement et tests : direct relevé toutes les ~20 min, **classements et buteurs de la saison en cours non inclus** (le bot l'indique poliment) |
 | Pro (ou supérieure) | 7 500 requêtes/jour | production : direct toutes les 60 s, commandes servies largement |
 
 Vérifiez les tarifs et conditions actuels sur leur site avant la mise en production.

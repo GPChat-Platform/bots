@@ -263,6 +263,12 @@ test('/classement et /buteurs', async () => {
   assert.match(s.sent.at(-1).text, /Compétition inconnue/);
 });
 
+test('donnée hors offre (saison en cours en offre gratuite) : message clair', async () => {
+  const s = handlerSetup({ standings: async () => { throw Object.assign(new Error('Free plans do not have access to this season'), { code: 'plan' }); } });
+  await s.dm('/classement ligue1');
+  assert.match(s.sent.at(-1).text, /pas incluse dans l’offre/);
+});
+
 test('quota épuisé : message clair', async () => {
   const s = handlerSetup({ searchTeams: async () => { throw Object.assign(new Error('quota'), { code: 'quota' }); } });
   await s.dm('/equipe arsenal');
