@@ -39,21 +39,24 @@ services:
     ports: ["127.0.0.1:18090:8080", "127.0.0.1:9103:9100"]   # webhooks entrants (derrière un reverse proxy HTTPS) et exploitation
     volumes: ["alerts-data:/data"]
 
+  # Bots activés à la demande : docker compose --profile reminders --profile football up -d
   reminders:
     <<: *bot
+    profiles: [reminders]
     build: { context: .., dockerfile: bots/reminders/Dockerfile }
     environment:
-      GPCHAT_API_KEY: ${REMINDERS_GPCHAT_API_KEY:?clé API du bot reminders}
+      GPCHAT_API_KEY: ${REMINDERS_GPCHAT_API_KEY:-}
       DEFAULT_TZ: ${REMINDERS_DEFAULT_TZ:-Africa/Douala}
     ports: ["127.0.0.1:9104:9100"]
     volumes: ["reminders-data:/data"]
 
   football:
     <<: *bot
+    profiles: [football]
     build: { context: .., dockerfile: bots/football/Dockerfile }
     environment:
-      GPCHAT_API_KEY: ${FOOTBALL_GPCHAT_API_KEY:?clé API du bot football}
-      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:?clé API-Football}
+      GPCHAT_API_KEY: ${FOOTBALL_GPCHAT_API_KEY:-}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:-}
       LIVE_POLL_SECONDS: ${FOOTBALL_LIVE_POLL_SECONDS:-60}
       DEFAULT_TZ: ${FOOTBALL_DEFAULT_TZ:-Africa/Douala}
     ports: ["127.0.0.1:9105:9100"]

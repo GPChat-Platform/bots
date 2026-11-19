@@ -19,6 +19,12 @@ docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
 docker compose -f deploy/docker-compose.yml logs -f
 ```
 
+Rappels et Foot en direct sont dans des **profils** Compose (activés seulement si leurs clés sont renseignées dans `.env`) :
+
+```bash
+docker compose -f deploy/docker-compose.yml --env-file deploy/.env --profile reminders --profile football up -d --build
+```
+
 ## 3. Dev Alerts : adresse HTTPS entrante
 
 Exemple Apache (certificat Let's Encrypt via `certbot --apache`) :
