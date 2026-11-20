@@ -4,6 +4,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+### Corrigé
+- En groupe, une commande adressée à un autre bot (« /aide@autre_bot ») n'obtient plus de réponse de ce bot (`BOT_USERNAME` pour changer son nom).
+
 ## [1.1.0] — 2026-11-19
 
 ### Modifié

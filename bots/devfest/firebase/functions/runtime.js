@@ -14,6 +14,7 @@
  * et on enregistre ceux qui ont changé APRÈS. Aucun état n'est gardé entre deux invocations.
  */
 const { createHandler } = require('./lib/handlers');
+const { ignoreOtherBotsCommands } = require('./lib/gpchat-bot');
 
 function createRuntime({ db, bot, program, admins = [], log = { error() {}, warn() {}, info() {} }, now = Date.now, throttleMs = 100 }) {
   /** Store synchrone pour UNE invocation, pré-rempli avec les utilisateurs donnés. */
@@ -57,7 +58,8 @@ function createRuntime({ db, bot, program, admins = [], log = { error() {}, warn
       return all.length;
     };
     const { handle } = createHandler({ bot, program, store, admins, now, log, broadcast });
-    await handle(update);
+    // En groupe, « /commande@autre_bot » ne concerne pas ce bot.
+    await ignoreOtherBotsCommands(handle, process.env.BOT_USERNAME || 'devfest_guide_bot')(update);
     await persistChanged(store, before);
     return { duplicate: false };
   }

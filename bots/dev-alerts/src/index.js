@@ -4,7 +4,9 @@
 // Exploitation : /healthz /readyz /metrics sur OPS_PORT (9100, 127.0.0.1) — voir docs/OPERATIONS.md.
 const fs = require('node:fs');
 const path = require('node:path');
-const { GPChatBot } = require('@gpchat/bot');
+const { GPChatBot, ignoreOtherBotsCommands } = require('@gpchat/bot');
+// Nom du bot : en groupe, « /commande@autre_bot » ne le concerne pas (voir ignoreOtherBotsCommands).
+const BOT_USERNAME = process.env.BOT_USERNAME || 'devalerts_bot';
 const { createOps } = require('@gpchat/bot-ops');
 const { createServer, createCommands, Hooks } = require('./server');
 
@@ -40,7 +42,7 @@ const handle = createCommands({ bot, hooks, publicUrl });
 
 ops.expectPolling();
 ops.metrics.set('webhooks_configured', Object.keys(store.data.hooks).length, undefined, 'Webhooks entrants configurés');
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(ignoreOtherBotsCommands(handle, BOT_USERNAME)), { timeout: 20, onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 const port = Number(process.env.PORT || 8080);
 const server = createServer({ bot, hooks, ops }).listen(port, () => log.info('Dev Alerts démarré', { version, port, hooks: Object.keys(store.data.hooks).length }));
 ops.listen().catch((e) => log.error("serveur d'exploitation indisponible", { error: e.message }));

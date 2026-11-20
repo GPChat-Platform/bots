@@ -3,7 +3,9 @@
 // Variables : GPCHAT_API_KEY (obligatoire) ; DEFAULT_TZ (Africa/Douala), DATA_DIR, LOG_LEVEL, OPS_PORT, CONCURRENCY (facultatives).
 // Exploitation : /healthz /readyz /metrics sur OPS_PORT (9100, 127.0.0.1) — voir docs/OPERATIONS.md.
 const path = require('node:path');
-const { GPChatBot, button } = require('@gpchat/bot');
+const { GPChatBot, button, ignoreOtherBotsCommands } = require('@gpchat/bot');
+// Nom du bot : en groupe, « /commande@autre_bot » ne le concerne pas (voir ignoreOtherBotsCommands).
+const BOT_USERNAME = process.env.BOT_USERNAME || 'rappels_bot';
 const { createOps } = require('@gpchat/bot-ops');
 const { Store } = require('./store');
 const { Scheduler } = require('./scheduler');
@@ -39,7 +41,7 @@ setInterval(() => {
   metrics.set('reminders_users', s.users, undefined, 'Utilisateurs connus');
 }, 15000).unref();
 
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(ignoreOtherBotsCommands(handle, BOT_USERNAME)), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 scheduler.start();
 ops.listen().catch((e) => log.error("serveur d'exploitation indisponible", { error: e.message }));
 log.info('Rappels démarré', { version, mode: 'polling', defaultTz, reminders: store.stats().active });

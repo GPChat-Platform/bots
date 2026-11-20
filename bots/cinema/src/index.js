@@ -3,7 +3,9 @@
 // Variables : GPCHAT_API_KEY, TMDB_TOKEN (obligatoires) ; OMDB_API_KEY, DATA_DIR, LOG_LEVEL, OPS_PORT (facultatives).
 // Exploitation : /healthz /readyz /metrics sur OPS_PORT (9100, 127.0.0.1) — voir docs/OPERATIONS.md.
 const path = require('node:path');
-const { GPChatBot, button } = require('@gpchat/bot');
+const { GPChatBot, button, ignoreOtherBotsCommands } = require('@gpchat/bot');
+// Nom du bot : en groupe, « /commande@autre_bot » ne le concerne pas (voir ignoreOtherBotsCommands).
+const BOT_USERNAME = process.env.BOT_USERNAME || 'cineclub_bot';
 const { createOps } = require('@gpchat/bot-ops');
 const { Tmdb, Omdb } = require('./tmdb');
 const { Store } = require('./store');
@@ -38,7 +40,7 @@ ops.addReadinessCheck('tmdb', async () => {
   }
 });
 
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(ignoreOtherBotsCommands(handle, BOT_USERNAME)), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 ops.listen().catch((e) => log.error("serveur d'exploitation indisponible", { error: e.message }));
 log.info('Ciné Club démarré', { version, mode: 'polling', omdb: Boolean(omdb) });
 

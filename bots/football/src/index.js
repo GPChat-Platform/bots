@@ -4,7 +4,9 @@
 // QUOTA_RESERVE (50), DATA_DIR, LOG_LEVEL, OPS_PORT, CONCURRENCY (facultatives).
 // Exploitation : /healthz /readyz /metrics sur OPS_PORT (9100, 127.0.0.1) — voir docs/OPERATIONS.md.
 const path = require('node:path');
-const { GPChatBot, button } = require('@gpchat/bot');
+const { GPChatBot, button, ignoreOtherBotsCommands } = require('@gpchat/bot');
+// Nom du bot : en groupe, « /commande@autre_bot » ne le concerne pas (voir ignoreOtherBotsCommands).
+const BOT_USERNAME = process.env.BOT_USERNAME || 'footdirect_bot';
 const { createOps } = require('@gpchat/bot-ops');
 const { FootballApi } = require('./api');
 const { Store } = require('./store');
@@ -53,7 +55,7 @@ setInterval(() => {
   metrics.set('football_live_interval_seconds', Math.round(tracker.interval() / 1000), undefined, 'Intervalle effectif du suivi du direct');
 }, 15000).unref();
 
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(ignoreOtherBotsCommands(handle, BOT_USERNAME)), { timeout: 20, concurrency: Number(process.env.CONCURRENCY || 16), onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 tracker.start();
 ops.listen().catch((e) => log.error("serveur d'exploitation indisponible", { error: e.message }));
 log.info('Foot en direct démarré', { version, mode: 'polling', defaultTz, followedTeams: store.stats().teams });

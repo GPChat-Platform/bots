@@ -163,3 +163,19 @@ test('middleware Express : refuse une signature invalide, expose l\'événement 
   mw(req, mkRes(), () => { called = true; });
   assert.equal(called, true); assert.equal(req.gpchatEvent.type, 'message.received');
 });
+
+test('commandes de groupe adressées à un autre bot : ignorées', async () => {
+  const { isAddressedToOtherBot, ignoreOtherBotsCommands } = require('../index.js');
+  assert.equal(isAddressedToOtherBot('/aide@cineclub_bot', 'cineclub_bot'), false);
+  assert.equal(isAddressedToOtherBot('/aide@CineClub_Bot ligue1', '@cineclub_bot'), false);
+  assert.equal(isAddressedToOtherBot('/aide@footdirect_bot', 'cineclub_bot'), true);
+  assert.equal(isAddressedToOtherBot('/aide', 'cineclub_bot'), false);
+  assert.equal(isAddressedToOtherBot('bonjour @footdirect_bot', 'cineclub_bot'), false);
+  const seen = [];
+  const h = ignoreOtherBotsCommands(async (u) => { seen.push(u.data.textMsg); }, 'cineclub_bot');
+  await h({ type: 'group_message.received', data: { textMsg: '/film@footdirect_bot' } });
+  await h({ type: 'group_message.received', data: { textMsg: '/film@cineclub_bot Dune' } });
+  await h({ type: 'group_message.received', data: { textMsg: '/aide' } });
+  await h({ type: 'message.received', data: { textMsg: '/film@autre_bot' } });
+  assert.deepEqual(seen, ['/film@cineclub_bot Dune', '/aide', '/film@autre_bot']);
+});

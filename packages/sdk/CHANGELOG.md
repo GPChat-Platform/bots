@@ -4,6 +4,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versionnage
 
 ## [Non publié]
 
+## [1.2.0] — 2026-11-20
+
+### Ajouté
+- `isAddressedToOtherBot(text, username)` et `ignoreOtherBotsCommands(handler, username)` : dans un groupe, « /commande@autre_bot » est ignoré (convention Telegram : « /commande@nom_du_bot » ne concerne que ce bot).
+
 ## [1.1.1] — 2026-11-19
 
 ### Corrigé

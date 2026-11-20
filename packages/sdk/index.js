@@ -253,4 +253,23 @@ function webhookMiddleware(secret, options = {}) {
   };
 }
 
-module.exports = { GPChatBot, GPChatError, verifyWebhookSignature, webhookMiddleware, button, DEFAULT_BASE_URL };
+/**
+ * Commande adressée à un AUTRE bot (« /cmd@autre_bot ») ? Convention des groupes (comme Telegram) :
+ * « /cmd@nom_du_bot » ne concerne que ce bot, « /cmd » tous les bots du groupe.
+ * La plateforme ne remet déjà « /cmd@bot » qu'au bot visé ; ce contrôle est une protection de plus.
+ */
+function isAddressedToOtherBot(text, username) {
+  const m = /^\/[A-Za-z0-9_]+@([A-Za-z0-9_]+)/.exec(String(text || '').trim());
+  return Boolean(m && username && m[1].toLowerCase() !== String(username).replace(/^@/, '').toLowerCase());
+}
+
+/** Enveloppe un gestionnaire : les commandes de groupe adressées à un autre bot sont ignorées. */
+function ignoreOtherBotsCommands(handler, username) {
+  return async (update) => {
+    const d = (update && update.data) || {};
+    if (update && update.type === 'group_message.received' && isAddressedToOtherBot(d.textMsg, username)) return;
+    return handler(update);
+  };
+}
+
+module.exports = { GPChatBot, GPChatError, verifyWebhookSignature, webhookMiddleware, button, isAddressedToOtherBot, ignoreOtherBotsCommands, DEFAULT_BASE_URL };

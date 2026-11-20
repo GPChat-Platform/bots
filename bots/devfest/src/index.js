@@ -4,7 +4,9 @@
 // Exploitation : /healthz /readyz /metrics sur OPS_PORT (9100, 127.0.0.1) — voir docs/OPERATIONS.md.
 const fs = require('node:fs');
 const path = require('node:path');
-const { GPChatBot } = require('@gpchat/bot');
+const { GPChatBot, ignoreOtherBotsCommands } = require('@gpchat/bot');
+// Nom du bot : en groupe, « /commande@autre_bot » ne le concerne pas (voir ignoreOtherBotsCommands).
+const BOT_USERNAME = process.env.BOT_USERNAME || 'devfest_guide_bot';
 const { createOps } = require('@gpchat/bot-ops');
 const P = require('./program');
 const { createHandler } = require('./handlers');
@@ -42,7 +44,7 @@ const admins = (process.env.ADMIN_IDS || '').split(',').map((s) => s.trim()).fil
 const { handle, tick } = createHandler({ bot, program, store, admins, log });
 
 ops.expectPolling();
-const stop = bot.poll(ops.instrumentHandler(handle), { timeout: 20, onError: (e) => log.warn('polling en erreur', { error: e.message }) });
+const stop = bot.poll(ops.instrumentHandler(ignoreOtherBotsCommands(handle, BOT_USERNAME)), { timeout: 20, onError: (e) => log.warn('polling en erreur', { error: e.message }) });
 const timer = setInterval(() => {
   ops.metrics.set('users', Object.keys(store.data.users).length, undefined, 'Utilisateurs connus');
   tick().catch((e) => log.error('rappels en échec', { error: e.message }));
