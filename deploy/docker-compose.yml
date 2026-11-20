@@ -21,11 +21,14 @@ services:
     ports: ["127.0.0.1:9101:9100"]   # /healthz /readyz /metrics (jamais exposés sur Internet)
     volumes: ["cinema-data:/data"]
 
+  # Le Guide DevFest tourne en production sur Firebase (webhook) : version Docker seulement sur demande
+  # (docker compose --profile devfest up -d devfest), sinon deux consommateurs pour le même bot.
   devfest:
     <<: *bot
+    profiles: [devfest]
     build: { context: .., dockerfile: bots/devfest/Dockerfile }
     environment:
-      GPCHAT_API_KEY: ${DEVFEST_GPCHAT_API_KEY:?clé API du bot DevFest Guide}
+      GPCHAT_API_KEY: ${DEVFEST_GPCHAT_API_KEY:-}
       ADMIN_IDS: ${DEVFEST_ADMIN_IDS:-}
     ports: ["127.0.0.1:9102:9100"]
     volumes: ["devfest-data:/data"]   # déposez-y program.json pour remplacer celui du dépôt
